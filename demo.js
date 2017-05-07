@@ -13,11 +13,11 @@ $('.controls2 .destroy').on('click', function(){
 });
 
 $('.controls2 .lock').on('click', function(){
-  $odontogram2.odontogram('lock');
+  $odontogram2.odontogram('disable');
 });
 
 $('.controls2 .unlock').on('click', function(){
-  $odontogram2.odontogram('unlock');
+  $odontogram2.odontogram('enable');
 });
 
 $('.controls2 .empty').on('click', function(){
