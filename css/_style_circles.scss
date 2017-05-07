@@ -1,0 +1,45 @@
+&.up{
+  position: absolute;
+    top: 0px;
+    left: (100% / 3);
+    right: (100% / 3);
+    height: (100% / 3);
+  @include border-radius(100%);
+}
+
+&.down{
+  position: absolute;
+    bottom: 0px;
+    left: (100% / 3);
+    right: (100% / 3);
+    height: (100% / 3);
+  @include border-radius(100%);
+}
+
+&.left{
+  position: absolute;
+    left: 0px;
+    top: (100% / 3);
+    bottom: (100% / 3);
+  width: (100% / 3);
+  @include border-radius(100%);
+}
+
+&.right{
+  position: absolute;
+    right: 0px;
+    top: (100% / 3);
+    bottom: (100% / 3);
+  width: (100% / 3);
+  @include border-radius(100%);
+}
+
+&.center{
+  //border: 1px gray dotted;
+  position: absolute;
+    right: (100% / 3);
+    left: (100% / 3);
+    top: (100% / 3);
+    bottom: (100% / 3);
+  @include border-radius(100%);
+}

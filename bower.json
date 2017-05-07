@@ -1,0 +1,26 @@
+{
+  "name": "odontogram",
+  "homepage": "http://github.com/arodu/odontogram",
+  "authors": [
+    "Alberto Rodriguez <arodu.dev@gmail.com>"
+  ],
+  "description": "odontogram designer",
+  "main": "index.html",
+  "keywords": [
+    "odontogram",
+    "odontology",
+    "dental chart"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.2.1",
+    "jquery-ui": "jqueryui#^1.12.1"
+  }
+}

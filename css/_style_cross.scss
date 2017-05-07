@@ -1,0 +1,44 @@
+&.up{
+  position: absolute;
+    top: 0px;
+    left: 30%;
+    right: 30%;
+    height: 30%;
+  @include border-radius(0);
+}
+
+&.down{
+  position: absolute;
+    bottom: 0px;
+    left: 30%;
+    right: 30%;
+    height: 30%;
+  @include border-radius(0);
+}
+
+&.left{
+  position: absolute;
+    left: 0px;
+    top: 30%;
+    bottom: 30%;
+  width: 30%;
+  @include border-radius(0);
+}
+
+&.right{
+  position: absolute;
+    right: 0px;
+    top: 30%;
+    bottom: 30%;
+  width: 30%;
+  @include border-radius(0);
+}
+
+&.center{
+  //border: 1px gray dotted;
+  position: absolute;
+    right: 30%;
+    left: 30%;
+    top: 30%;
+    bottom: 30%;
+}
