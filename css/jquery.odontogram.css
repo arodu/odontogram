@@ -157,8 +157,6 @@
 .og-diagram .og-triangle {
   background-image: url("../img/triangle.svg"), none;
   background-size: contain;
-  background-color: #AAA;
-  opacity: .4;
 }
 
 .og-diagram .og-test {
