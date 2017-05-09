@@ -145,14 +145,26 @@
 }
 
 .og-diagram .og-x-red {
-  background: url("../img/x-red.png");
   background: url("../img/x-red.svg");
   background-size: contain;
 }
 
 .og-diagram .og-x-blue {
-  background: url("../img/x-blue.png");
   background-image: url("../img/x-blue.svg"), none;
+  background-size: contain;
+}
+
+.og-diagram .og-triangle {
+  background-image: url("../img/triangle.svg"), none;
+  background-size: contain;
+  background-color: #AAA;
+  opacity: .4;
+}
+
+.og-diagram .og-test {
+  margin-left: -2px;
+  margin-right: -2px;
+  background-image: url("../img/dash-line.svg"), none;
   background-size: contain;
 }
 

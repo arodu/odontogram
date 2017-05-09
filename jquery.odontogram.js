@@ -2,7 +2,7 @@
   $.fn.odontogram = function(method, aux){
     
     var menu = [
-      {
+      /*{
         title: 'Caries',
         type: 'section',
         value: 1,
@@ -12,16 +12,48 @@
         type: 'section',
         value: 2,
       },
-      { type: 'separator' },
+      { type: 'separator' }, */
       {
         title: 'Extracción Indicada',
         type: 'unit',
         value: 1,
+        class: 'og-x-red'
       },
       {
         title: 'Perdida por Caries',
         type: 'unit',
         value: 2,
+        class: 'og-x-blue'
+      },
+      {
+        title: 'Endodoncia',
+        type: 'unit',
+        value: 3,
+        class: 'og-x-triangle'
+      },
+      {
+        title: 'Test',
+        type: 'unit',
+        value: 4,
+        class: 'og-x-blue'
+      },
+      {
+        title: 'Test',
+        type: 'unit',
+        value: 4,
+        class: 'og-x-blue'
+      },
+      {
+        title: 'Test',
+        type: 'unit',
+        value: 4,
+        class: 'og-x-blue'
+      },
+      {
+        title: 'Test',
+        type: 'unit',
+        value: 4,
+        class: 'og-x-blue'
       },
     ];
     
@@ -35,6 +67,8 @@
       unitClasses: {
         1: 'og-x-red',
         2: 'og-x-blue',
+        3: 'og-triangle',
+        4: 'og-test',
       },
       menuTitle: 'Pieza %dataItem%',
       menu: menu,
@@ -222,6 +256,21 @@
     }
     
     /* ************************************************************************ */
+    
+    function _getUnitClasses(index){
+      var uc;
+      menu.forEach(function(i, data){
+        if(data.type == 'unit'){
+          uc[data.value] = data.class
+        }
+      });
+      
+      if(index === undefined){
+        return uc;
+      }{
+        return uc[index]
+      }
+    }
     
     function _generateItem( $item, json ){
       _destroyItem($item);
