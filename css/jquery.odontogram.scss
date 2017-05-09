@@ -111,8 +111,6 @@
     .og-triangle{
       background-image: url("../img/triangle.svg"), none;
       background-size: contain;
-      background-color: #AAA;
-      opacity: .4;
     }
     
     .og-test{
@@ -122,15 +120,17 @@
       background-size: contain;
     }
     
-}
-.og-diagram.og-style-cross .og-item .og-unit .og-section {
-  @import '_style_cross';
+
+  &.og-style-cross .og-item .og-unit .og-section {
+    @import '_style_cross';
+  }
+
+  &.og-style-square-round .og-item .og-unit .og-section {
+    @import '_style_square_round';
+  }
+
+  &.og-style-circles .og-item .og-unit .og-section {
+    @import '_style_circles';
 }
 
-.og-diagram.og-style-square-round .og-item .og-unit .og-section {
-  @import '_style_square_round';
-}
-
-.og-diagram.og-style-circles .og-item .og-unit .og-section {
-  @import '_style_circles';
 }

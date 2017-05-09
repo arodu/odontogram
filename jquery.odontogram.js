@@ -1,98 +1,88 @@
 (function($) {
   $.fn.odontogram = function(method, aux){
-    
-    var menu = [
-      /*{
+    var data = [
+      {
         title: 'Caries',
         type: 'section',
         value: 1,
+        image: {background: "#FF0000", border: '4px #FF0000 solid'},
+        imageEmpty: {background: "#FFFFFF", border: 'none'},
+        menu: false
       },
       {
         title: 'Restauración',
         type: 'section',
         value: 2,
+        image: {background: "#0000FF"},
+        menu: false
       },
-      { type: 'separator' }, */
+      {
+        type: 'separator',
+        menu: false // true
+      },
+      {
+        type: 'range',
+        menu: false // true
+      },
       {
         title: 'Extracción Indicada',
         type: 'unit',
         value: 1,
-        class: 'og-x-red'
+        image: {background: "url(\"../img/x-red.svg\")"},
+        menu: true
       },
       {
         title: 'Perdida por Caries',
         type: 'unit',
         value: 2,
-        class: 'og-x-blue'
+        image: {background: "url(\"../img/x-blue.svg\")"},
+        menu: true
       },
       {
         title: 'Endodoncia',
         type: 'unit',
         value: 3,
-        class: 'og-x-triangle'
-      },
-      {
-        title: 'Test',
-        type: 'unit',
-        value: 4,
-        class: 'og-x-blue'
-      },
-      {
-        title: 'Test',
-        type: 'unit',
-        value: 4,
-        class: 'og-x-blue'
-      },
-      {
-        title: 'Test',
-        type: 'unit',
-        value: 4,
-        class: 'og-x-blue'
-      },
-      {
-        title: 'Test',
-        type: 'unit',
-        value: 4,
-        class: 'og-x-blue'
+        image: {background: "url(\"../img/triangle.svg\")"},
+        menu: true
       },
     ];
-    
+
     var options = {}
     var options_default = {
       size: '40px',
-      sectionClasses: {
-        1: 'og-red',
-        2: 'og-blue',
-      },
-      unitClasses: {
-        1: 'og-x-red',
-        2: 'og-x-blue',
-        3: 'og-triangle',
-        4: 'og-test',
-      },
+      sectionEmpty: {background: "#FFFFFF", border: 'none'},
+      unitEmpty: {background: "none"},
+
+      titleView: 'up', // up, down, false
+      movilityView: 'up',   // up, down, false
+      rescetionView: 'up',   // up, down, false
+
       menuTitle: 'Pieza %dataItem%',
-      menu: menu,
-      emptyColor: 'og-empty-color',
-      bgColor: 'og-bg-color',
+      data: data,
+
+      itemSelector: '.og-quadrant > div',
+
+      sectionClick: function($section){},
+      unitClick: function($unit){},
+      changeItem: function($item){},
+      sectionHover: function($section){},
+      
       json: {},
       
-      itemSelector: '.og-quadrant > div',
-      sectionTag: 'span',
-      unitTag: 'div',
-      titleView: true,
-      titleLocation: 'up', // down
-      titleTag: 'div',
       inputName: 'odontogram',
 
-      beforeClick: function(){},
-      afterClick: function(){},
-      hover: function(){}
+      sectionTag: 'span',
+      unitTag: 'div',
+      titleTag: 'div',
+
+      classes : {},
     };
-    
+
     var classes = {
       diagram: 'og-diagram',
       item: 'og-item',
       title: 'og-title',
+      input: 'og-input',
       unit: 'og-unit',
       unitInput: 'og-unit-input',
       section: 'og-section',
@@ -108,8 +98,9 @@
       destroy: function($odontogram){ $odontogram.each(function(){ destroy( $(this) ) }); return $odontogram; },
       paint: function($odontogram){ $odontogram.each(function(){ paint( $(this) ) }); return $odontogram; },
       setOptions: function($odontogram, options){ $odontogram.each(function(){ setOptions( $(this), options ) }); return $odontogram; },
-      //setClasses: function($odontogram, classes){ $odontogram.each(function(){ setClasses( $(this), classes ) }); return $odontogram; },
-      
+      setClasses: function($odontogram, classes){ $odontogram.each(function(){ setClasses( $(this), classes ) }); return $odontogram; },
+      setData: function($odontogram, data){ $odontogram.each(function(){ setData( $(this), data ) }); return $odontogram; },
+
       //loadJson: function( $odontogram, json ){ return loadJson( $odontogram, json ) },
       //unloadJson: function( $odontogram, toText ){ return unloadJson( $odontogram, toText ) },
       disable: function( $odontogram ){ $odontogram.each(function(){ disable( $(this) ) }); return $odontogram; },
@@ -119,10 +110,12 @@
     
     if( methods[method] ){
       options = $(this).data('options');
+      classes = $(this).data('classes');
+      data = $(this).data('data');
       return methods[method]($(this), aux );
     }else if( typeof method === 'object' || !method ){
-      setOptions($(this), method)
-      $(this).data('options',options);
+      var options_user = method;
+      setOptions($(this), options_user);
       return init( $(this) );
     }else{
       console.error( 'the "'+method+'" method does not exist');
@@ -166,14 +159,24 @@
     
     function setOptions($odontogram, options_user){
       options = $.extend(options_default, options, options_user);
+      $odontogram.data('options',options);
+      setClasses($odontogram, options.classes);
+      setData($odontogram, options.data);
       return $odontogram;
     }
     
-    //function setClasses($odontogram, classes_user){
-    //  classes = $.extend(classes, classes_user);
-    //  return $odontogram;
-    //}
+    function setClasses($odontogram, classes_user){
+      classes = $.extend(classes, classes_user);
+      $odontogram.data('classes',classes);
+      return $odontogram;
+    }
     
+    function setData($odontogram, data_user){
+      //data = $.extend(data, data_user);
+      $odontogram.data('data',data_user);
+      return $odontogram;
+    }
+
     function disable( $odontogram ){
       $odontogram.addClass(classes.disable);
       $odontogram.find(_c(classes.section)).off('click');
@@ -191,7 +194,7 @@
         $(_c(classes.menu)).remove();
         event.stopPropagation();
         var $item = $(this).closest(_c(classes.item));
-        _displayMenu($item);
+        //_displayMenu($item);
       });
       
       $odontogram.find(_c(classes.section)).on('click', function(){
@@ -285,7 +288,7 @@
       var unit_input_name = options.inputName+"["+dataItem+"][unit]";
       var $unit_input = $('<input />')
         .prop('type','hidden').prop('name',unit_input_name).val(0)
-        .addClass(classes.unitInput);
+        .addClass(classes.unitInput).addClass(classes.input);
       
       $unit.append( $unit_input );
       
@@ -298,7 +301,7 @@
         var section_input_name = options.inputName+"[" +dataItem+"]["+section+"]";
         var $section_input = $('<input />')
           .prop('type','hidden').prop('name',section_input_name).val(0)
-          .addClass(classes.sectionInput);
+          .addClass(classes.sectionInput).addClass(classes.input);
 
         $section.html($section_input);
         $unit.append( $section );
@@ -383,6 +386,10 @@
       _paintItem($item);
     }
     
+    function _destroyMenu(){
+      $(classes.menu).remove();
+    }
+
     function _paintItem( $item ){
       $item.find(_c(classes.unit)).each(function(){
         var $unit = $(this);
@@ -475,6 +482,27 @@
       return $section;
     }
     
+    function _getDataType(data, type){
+      var out = [];
+      data.forEach(function(i, v){
+        if(v['type'] == type){
+          out[i]=v;
+        }
+      });
+      return out;
+    }
+
+    function _getDataMenu(data){
+      var out = [];
+      data.forEach(function(i, v){
+        if(v['menu'] == true){
+          out[i]=v;
+        }
+      });
+      return out;
+    }
+
     return $(this);
   }
+
 })(jQuery);
