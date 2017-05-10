@@ -32,6 +32,7 @@
 .og-diagram .og-item .og-title {
   font-size: .8em;
   text-align: center;
+  margin: 0 2px;
   text-decoration: none;
   display: block;
   cursor: pointer;
@@ -126,6 +127,21 @@
 
 .og-diagram .og-item .og-menu .ui-widget-header {
   padding: 0.2em;
+}
+
+.og-diagram .og-item .og-mobility, .og-diagram .og-item .og-recession {
+  text-align: center;
+  margin: 0 2px;
+}
+
+.og-diagram .og-item .og-mobility-input, .og-diagram .og-item .og-recession-input {
+  width: 70%;
+  font-size: .7em;
+  border: 0px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  border-radius: 4px;
 }
 
 .og-diagram.og-bg-color {

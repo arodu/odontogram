@@ -4,6 +4,7 @@ $odontogram2 = $('#odontogram2').odontogram({
   itemSelector: '.og-quadrant > div > div'
 });
 
+
 $('.controls2 .init').on('click', function(){
   $odontogram2.odontogram('init');
 });

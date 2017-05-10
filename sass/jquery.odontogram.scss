@@ -40,6 +40,7 @@
     .og-title{
       font-size: .8em;
       text-align: center;
+      margin: 0 2px;
       text-decoration: none;
       display: block;
       cursor: pointer;
@@ -79,6 +80,19 @@
       &.ui-menu { width: 140px; }
       .ui-widget-header { padding: 0.2em; }
     }
+  
+    .og-mobility, .og-recession{
+      text-align: center;
+      margin: 0 2px;
+    }
+    
+    .og-mobility-input, .og-recession-input{
+      width: 70%;
+      font-size: .7em;
+      border: 0px;
+      @include border-radius(4px);
+    }
+  
   }
   
   // Colors

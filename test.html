@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Test</title>
+  </head>
+  <body>
+    
+    <div class="og-config" data-id="1">
+      <div class="og-config" data-id="2">
+        <div class="og-config" data-id="3">
+          <div id="int" data-id="4">
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <script src="vendor/jquery/dist/jquery.min.js" charset="utf-8"></script>
+    <script type="text/javascript">
+      jQuery.fn.reverse = [].reverse;
+      
+      $('#int').parents('.og-config').reverse().each(function(){
+        console.log($(this).data('id'));
+      });
+      
+    </script>
+  </body>
+</html>

@@ -2,18 +2,17 @@
   $.fn.odontogram = function(method, aux){
     var data = [
       {
+        index: 1,
         title: 'Caries',
         type: 'section',
-        value: 1,
-        image: {background: "#FF0000", border: '4px #FF0000 solid'},
-        imageEmpty: {background: "#FFFFFF", border: 'none'},
+        figure: {background: "#FF0000"},
         menu: false
       },
       {
+        index: 2,
         title: 'Restauración',
         type: 'section',
-        value: 2,
-        image: {background: "#0000FF"},
+        figure: {background: "#0000FF"},
         menu: false
       },
       {
@@ -25,24 +24,24 @@
         menu: false // true
       },
       {
+        index: 1,
         title: 'Extracción Indicada',
         type: 'unit',
-        value: 1,
-        image: {background: "url(\"../img/x-red.svg\")"},
+        figure: {background: "url(\"../img/x-red.svg\")"},
         menu: true
       },
       {
+        index: 2,
         title: 'Perdida por Caries',
         type: 'unit',
-        value: 2,
-        image: {background: "url(\"../img/x-blue.svg\")"},
+        figure: {background: "url(\"../img/x-blue.svg\")"},
         menu: true
       },
       {
+        index: 3,
         title: 'Endodoncia',
         type: 'unit',
-        value: 3,
-        image: {background: "url(\"../img/triangle.svg\")"},
+        figure: {background: "url(\"../img/triangle.svg\")"},
         menu: true
       },
     ];
@@ -50,12 +49,13 @@
     var options = {}
     var options_default = {
       size: '40px',
-      sectionEmpty: {background: "#FFFFFF", border: 'none'},
-      unitEmpty: {background: "none"},
+      figureSectionEmpty: {background: "#FFFFFF"},
+      figureUnitEmpty: {background: "none"},
+      emptyValue: 0,
 
       titleView: 'up', // up, down, false
-      movilityView: 'up',   // up, down, false
-      rescetionView: 'up',   // up, down, false
+      mobilityView: 'up',   // up, down, false
+      recessionView: 'up',   // up, down, false
 
       menuTitle: 'Pieza %dataItem%',
       data: data,
@@ -74,11 +74,16 @@
       sectionTag: 'span',
       unitTag: 'div',
       titleTag: 'div',
-
-      classes : {},
+      
+      enable: true,
+      
+      classes: {},
+      
+      debug: true,
     };
 
     var classes = {
+      config: 'og-config',
       diagram: 'og-diagram',
       item: 'og-item',
       title: 'og-title',
@@ -91,6 +96,10 @@
       menu: 'og-menu',
       menuItem: 'og-menu-item',
       overSection: 'og-over-section',
+      mobility: 'og-mobility',
+      mobilityInput: 'og-mobility-input',
+      recession: 'og-recession',
+      recessionInput: 'og-recession-input',
     }
     
     var methods = {
@@ -100,12 +109,11 @@
       setOptions: function($odontogram, options){ $odontogram.each(function(){ setOptions( $(this), options ) }); return $odontogram; },
       setClasses: function($odontogram, classes){ $odontogram.each(function(){ setClasses( $(this), classes ) }); return $odontogram; },
       setData: function($odontogram, data){ $odontogram.each(function(){ setData( $(this), data ) }); return $odontogram; },
-
-      //loadJson: function( $odontogram, json ){ return loadJson( $odontogram, json ) },
-      //unloadJson: function( $odontogram, toText ){ return unloadJson( $odontogram, toText ) },
       disable: function( $odontogram ){ $odontogram.each(function(){ disable( $(this) ) }); return $odontogram; },
       enable: function( $odontogram ){ $odontogram.each(function(){ enable( $(this) ) }); return $odontogram; },
       empty: function( $odontogram ){ $odontogram.each(function(){ empty( $(this) ) }); return $odontogram; },
+      //loadJson: function( $odontogram, json ){ return loadJson( $odontogram, json ) },
+      //unloadJson: function( $odontogram, toText ){ return unloadJson( $odontogram, toText ) },
     };
     
     if( methods[method] ){
@@ -121,47 +129,12 @@
       console.error( 'the "'+method+'" method does not exist');
     }
     
-    function init($odontogram){
-      destroy($odontogram);
-      $odontogram.addClass(classes.diagram).addClass(options.bgColor);
-      
-      $odontogram.find(options.itemSelector).each(function(){
-        $item = $(this);
-        _generateItem($item, options.json );
-        
-        var $sections = $item.find(_c(classes.section));
-        $sections.on('mouseenter', function(){
-          var $section = $(this);
-          var $item = $section.closest(_c(classes.item));
-          var $section_input = $section.find(_c(classes.sectionInput));
-          var $unit_input = $item.find(_c(classes.unitInput));
-
-          options.hover({
-            'section': $section.data('section'),
-            'item': $item.data('item'),
-            'section_value': $section_input.val(),
-            'unit_value': $unit_input.val(),
-          });
-        });
-        _paintItem( $item );
-      });
-      enable( $odontogram );
-      return $odontogram;
-    }
-    
-    function destroy($odontogram){
-      $odontogram.find(_c(classes.item)).each(function(){
-        _destroyItem( $(this) );
-      })
-      $odontogram.removeClass(classes.diagram);
-      return $odontogram;
-    }
-    
     function setOptions($odontogram, options_user){
       options = $.extend(options_default, options, options_user);
       $odontogram.data('options',options);
       setClasses($odontogram, options.classes);
       setData($odontogram, options.data);
+      debug('options saved');
       return $odontogram;
     }
     
@@ -172,83 +145,51 @@
     }
     
     function setData($odontogram, data_user){
-      //data = $.extend(data, data_user);
       $odontogram.data('data',data_user);
       return $odontogram;
     }
-
-    function disable( $odontogram ){
-      $odontogram.addClass(classes.disable);
-      $odontogram.find(_c(classes.section)).off('click');
-      $odontogram.find(_c(classes.title)).off('click');
-    }
-
-    function enable( $odontogram ){
-      $odontogram.removeClass(classes.disable);
+    
+    function init($odontogram){
+      destroy($odontogram);
+      $odontogram.addClass(classes.diagram);
       
-      $(window).click(function() {
-        $(_c(classes.menu)).remove();
-      });
+      $odontogram.find(options.itemSelector).each(function(){
+        $item = $(this);
+        _generateItem($item, options.json);
+        
+        var $sections = $item.find(_c(classes.section));
+        $sections.on('mouseenter', function(){
+          var $section = $(this);
+          var $item = $section.closest(_c(classes.item));
+          var $section_input = $section.find(_c(classes.sectionInput));
+          var $unit_input = $item.find(_c(classes.unitInput));
 
-      $odontogram.find(_c(classes.title)).on('click', function(event){
-        $(_c(classes.menu)).remove();
-        event.stopPropagation();
-        var $item = $(this).closest(_c(classes.item));
-        //_displayMenu($item);
-      });
-      
-      $odontogram.find(_c(classes.section)).on('click', function(){
-        $(_c(classes.menu)).remove();
-        var $section = $(this);
-        var $item = $section.closest(_c(classes.item));
-        var $section_input = $section.find(_c(classes.sectionInput));
-        var $unit_input = $item.find(_c(classes.unitInput));
-        
-        options.beforeClick({
-          'item': $item.data('item'),
-          'section': $section.data('section'),
-          'section_value': $section_input.val(),
-          'unit_value': $unit_input.val()
+          options.sectionHover({
+            'section': $section.data('section'),
+            'item': $item.data('item'),
+            'section_value': $section_input.val(),
+            'unit_value': $unit_input.val(),
+          });
         });
-        
-        _onClickSection( $section );
-        
-        options.afterClick({
-          'item': $item.data('item'),
-          'section': $section.data('section'),
-          'section_value': $section_input.val(),
-          'unit_value': $unit_input.val()
-        });
-        
-        return false;
+        _paintItem( $item );
       });
       
-      
-      /*
-      $odontogram.find('.og-title').on('click', function(){
-        var $item = $(this).closest('.og-item');
-        
-        $sections = $item.find(".og-section");
-        
-        //$item.find("input").each(function(){
-        //  console.log($(this).val());
-        //  $(this).val(0);
-        //});
-        
-        $sections.each(function(){
-          _onClickSection( $(this) );
-        });
-        return false;
-      }); */
+      if(options.enable){
+        enable( $odontogram );
+      }else{
+        disable( $odontogram );
+      }
+      debug('odontogram init');
+      return $odontogram;
     }
     
-    function empty( $odontogram ){
-      classInputs = _c(classes.sectionInput)+", "+_c(classes.unitInput);
-        $odontogram.find(classInputs).each(function(){
-          $(this).val(0);
-        });
-        paint($odontogram);
-        return $odontogram;
+    function destroy($odontogram){
+      $odontogram.find(_c(classes.item)).each(function(){
+        _destroyItem( $(this) );
+      })
+      $odontogram.removeClass(classes.diagram);
+      debug('odontogram destroyed');
+      return $odontogram;
     }
     
     function paint( $odontogram ){
@@ -258,7 +199,327 @@
       return $odontogram;
     }
     
+    function disable( $odontogram ){
+      $odontogram.addClass(classes.disable);
+      $odontogram.find(_c(classes.section)).off('click');
+      $odontogram.find(_c(classes.title)).off('click');
+      $odontogram.find(_c(classes.input)).prop('disabled', true);
+    }
+
+    function enable( $odontogram ){
+      $odontogram.removeClass(classes.disable);
+      
+      $(window).click(function() {
+        _destroyMenus();
+      });
+
+      $odontogram.find(_c(classes.title)).on('click', function(event){
+        _destroyMenus();
+        event.stopPropagation();
+        var $item = $(this).closest(_c(classes.item));
+        //_displayMenu($item);
+      });
+      
+      $odontogram.find(_c(classes.section)).on('click', function(){
+        _destroyMenus();
+        var $section = $(this);
+        var $item = $section.closest(_c(classes.item));
+        var $section_input = $section.find(_c(classes.sectionInput));
+        var $unit_input = $item.find(_c(classes.unitInput));
+        
+        _onClickSection( $section );
+        
+        options.sectionClick({
+          'item': $item.data('item'),
+          'section': $section.data('section'),
+          'section_value': $section_input.val(),
+          'unit_value': $unit_input.val()
+        });
+        
+        options.changeItem($item);
+        
+        return false;
+      });
+    }
+    
+    function empty( $odontogram ){
+      classInputs = _c(classes.sectionInput)+", "+_c(classes.unitInput);
+      $odontogram.find(classInputs).each(function(){
+        $(this).val(options.emptyValue);
+      });
+      classInputsText = _c(classes.mobilityInput)+", "+_c(classes.recessionInput);
+      $odontogram.find(classInputsText).each(function(){
+        $(this).val('');
+      });
+      paint($odontogram);
+      return $odontogram;
+    }
+    
     /* ************************************************************************ */
+    
+    function _destroyItem( $item ){
+      $item.removeClass(classes.item);
+      $item.css({width: '',height: ''});
+      $item.html('');
+      return $item;
+    }
+    
+    function _generateItem( $item, json ){
+      _destroyItem($item);
+      $item.addClass(classes.item);
+      var dataItem = $item.data('item');
+      
+      // createUnit
+      var $unit = $('<'+options.unitTag+' />')
+        .addClass(classes.unit)
+        .css({width: options.size, height: options.size});
+      
+      var unit_input_name = options.inputName+"["+dataItem+"][unit]";
+      var $unit_input = $('<input />')
+        .prop('type','hidden').prop('name',unit_input_name).val(options.emptyValue)
+        .addClass(classes.input).addClass(classes.unitInput);
+      
+      $unit.append( $unit_input );
+      
+      // createSections
+      var sections = ['up','down','right','left','center'];
+      sections.forEach( function(section) {
+        var $section = $('<'+options.sectionTag+' />')
+          .addClass(classes.section).addClass(section);
+
+        var section_input_name = options.inputName+"[" +dataItem+"]["+section+"]";
+        var $section_input = $('<input />')
+          .prop('type','hidden').prop('name',section_input_name).val(options.emptyValue)
+          .addClass(classes.input).addClass(classes.sectionInput);
+
+        $section.html($section_input);
+        $unit.append( $section );
+      });
+      var $over = $('<'+options.sectionTag+' />').addClass(classes.overSection);
+      $unit.append( $over );
+      // /createSections
+      $item.append( $unit );
+      // /createUnit
+      
+      // createTitle
+      if(options.titleView !== false){
+        var $item_title = $('<'+options.titleTag+' />').addClass(classes.title).html(dataItem);
+        if(options.titleView == 'down'){
+          $item.append( $item_title );
+        }else if(options.titleView == 'up'){
+          $item.prepend( $item_title );
+        }
+      }
+      // /createTitle
+      
+      // createMobility
+      if(options.mobilityView !== false){
+        //var $item_title = $('<'+options.titleTag+' />').addClass(classes.title).html(dataItem);
+        var mobility_input_name = options.inputName+"[" +dataItem+"][mob]";
+        var mobility_input = $('<input />').prop('type','text').prop('name',mobility_input_name)
+          .addClass(classes.input).addClass(classes.mobilityInput);
+        var mobility = $('<div/>').addClass(classes.mobility).css({width: options.size}).html(mobility_input);
+        if(options.mobilityView == 'down'){
+          $item.append( mobility );
+        }else if(options.mobilityView == 'up'){
+          $item.prepend( mobility );
+        }
+      }
+      // /createMobility
+      
+      // createRecession
+      if(options.recessionView !== false){
+        //var $item_title = $('<'+options.titleTag+' />').addClass(classes.title).html(dataItem);
+        var recession_input_name = options.inputName+"[" +dataItem+"][rec]";
+        var recession_input = $('<input/>').prop('type','text').prop('name',recession_input_name)
+          .addClass(classes.input).addClass(classes.recessionInput);
+        var recession = $('<div/>').addClass(classes.recession).css({width: options.size}).html(recession_input);
+        if(options.recessionView == 'down'){
+          $item.append( recession );
+        }else if(options.recessionView == 'up'){
+          $item.prepend( recession );
+        }
+      }
+      // /createRecession
+      
+      if(json !== undefined){
+        _loadJsonItem( $item, json);
+      }
+      
+      return $item;
+    }
+    
+    function _loadJsonItem($item, json){
+      // ToDo
+      return $item;
+    }
+    
+    function _c( class_name ){
+      return '.'+class_name;
+    }
+    
+    function _paintItem( $item ){
+      $item.find(_c(classes.unit)).each(function(){
+        var $unit = $(this);
+        var unit_value = $unit.find(_c(classes.unitInput)).val();
+        var $over = $unit.find(_c(classes.overSection));
+        
+        $unit.find(_c(classes.section)).each(function(){
+          $section = $(this);
+          var section_value = $section.find(_c(classes.sectionInput)).val();
+          //$section = _addColorClass($section, _selectSectionClass(section_value), 'section');
+          _addFigure($section, 'section', section_value);
+        });
+        
+        if(unit_value > 0){
+          _addFigure($unit, 'unit', unit_value);
+          $over.css('display', 'block');
+        }else{
+          $over.css('display', 'none');
+        }
+        
+        //_addColorClass($unit, _selectUnitClass( unit_value ), 'unit');
+        
+      });
+    }
+    
+    function _addFigure($tag, type, value){
+      var css = {};
+      dataItem = _getData(type, value);
+      if(dataItem !== false){
+        css = dataItem.figure;
+      }else{
+        if(type == 'unit'){
+            css = options.figureUnitEmpty;
+        }else if(type == 'section'){
+            css = options.figureSectionEmpty;
+        }
+      }
+      $tag.css(css);
+    }
+    
+    function _getData(type, value){
+      var out = false;
+      data.forEach(function(dataItem){
+        if(dataItem.type == type && dataItem.index == value){
+          out = dataItem;
+        }
+      });
+      return out;
+    }
+    
+    function _getDataList(type){
+      var dataList = [];
+      data.forEach(function(dataItem){
+        if(dataItem.type == type){
+          dataList.push(dataItem);
+        }
+      });
+      return dataList;
+    }
+    
+    function _destroyMenus(){
+      $(_c(classes.menu)).remove();
+    }
+
+    function _getListPosition(list, indexValue){
+      list.forEach(function(v, i){
+        if(v.index == indexValue){
+          return i;
+        }
+      });
+      return false;
+    }
+
+    function _onClickSection( $section ){
+      var $input = $section.find(_c(classes.sectionInput));
+      var value = $input.val();
+      var dataSections = _getDataList('section');
+      console.log(value);
+      
+      pos = _getListPosition(dataSections, value);
+      
+      
+      if(pos === false){
+        $input.val(dataSections[0].index);
+        _addFigure($section, 'section', dataSections[0].index);
+      }else{
+        console.log(pos);
+        pos = pos + 1;
+        $input.val(dataSections[pos].index);
+        _addFigure($section, 'section', dataSections[pos].index);
+      }
+      
+      /////////////// VOY POR AQUI!!!!!
+      
+      /*
+      var value = parseInt( $input.val() );
+      var qtyColors = Object.keys(options.sectionClasses).length;
+
+      if( value < qtyColors ){
+        $input.val( value+1 );
+        color = _selectSectionClass( value+1 );
+      }else{
+        $input.val( 0 );
+        color = _selectSectionClass(0);
+      }
+      _addColorClass($section, color, 'section');
+      */
+      
+      //_addFigure($section, 'section', value);
+      
+      return $section;
+    }
+    
+    function debug(out){
+      if(options.debug){
+        console.log(out);
+      }
+    }
+    
+    
+    
+    
+    /* ************************************************************************ */
+    /* ************************************************************************ */
+    /* ************************************************************************ */
+    
+    
+    
+    /*
+    function _addColorClass($itemElement, className, type){
+      if(type == 'unit'){
+        var remove_class = _join(options.unitClasses, " ");
+      }else{
+        var remove_class = _join(options.sectionClasses, " ");
+      }
+      
+      $itemElement
+        .removeClass(options.emptyColor +" "+remove_class)
+        .addClass(className);
+      return $itemElement;
+    } */
+    
+    /*
+    function _selectSectionClass( value ){
+      var color = options.emptyColor;
+      if( value > 0){
+        color = options.sectionClasses[value];
+      }
+      return color;
+    }
+    
+    function _selectUnitClass( value ){
+      var color = "";
+      if( value > 0){
+        color = options.unitClasses[value];
+      }
+      return color;
+    }
+    */
+    
+    
+    /*
     
     function _getUnitClasses(index){
       var uc;
@@ -275,71 +536,6 @@
       }
     }
     
-    function _generateItem( $item, json ){
-      _destroyItem($item);
-      $item.addClass(classes.item);
-      var dataItem = $item.data('item');
-      
-      // createUnit
-      var $unit = $('<'+options.unitTag+' />')
-        .addClass(classes.unit)
-        .css({width: options.size, height: options.size});
-      
-      var unit_input_name = options.inputName+"["+dataItem+"][unit]";
-      var $unit_input = $('<input />')
-        .prop('type','hidden').prop('name',unit_input_name).val(0)
-        .addClass(classes.unitInput).addClass(classes.input);
-      
-      $unit.append( $unit_input );
-      
-      // createSections
-      var sections = ['up','down','right','left','center'];
-      sections.forEach( function(section) {
-        var $section = $('<'+options.sectionTag+' />')
-          .addClass(classes.section).addClass(section);
-
-        var section_input_name = options.inputName+"[" +dataItem+"]["+section+"]";
-        var $section_input = $('<input />')
-          .prop('type','hidden').prop('name',section_input_name).val(0)
-          .addClass(classes.sectionInput).addClass(classes.input);
-
-        $section.html($section_input);
-        $unit.append( $section );
-      });
-      var $over = $('<'+options.sectionTag+' />').addClass(classes.overSection);
-      $unit.append( $over );
-      // /createSections
-      $item.append( $unit );
-      // /createUnit
-      
-      if(options.titleView){
-        var $item_title = $('<'+options.titleTag+' />').addClass(classes.title).html(dataItem);
-        if(options.titleLocation == 'down'){
-          $item.append( $item_title );
-        }else if(options.titleLocation == 'up'){
-          $item.prepend( $item_title );
-        }
-      }
-      
-      /* **
-      if(json !== 'undefined'){
-        _loadJsonItem( $item, json);
-      }
-      */
-      
-      return $item;
-    }
-    
-    function _destroyItem( $item ){
-      $item.removeClass(classes.item);
-      $item.css({width: '',height: ''});
-      $item.html('');
-      return $item;
-    }
-    
-    function _c(class_name){
-      return '.'+class_name;
-    }
     
     function _displayMenu($item){
       var menu = $('<ul />').addClass(classes.menu);
@@ -385,79 +581,9 @@
       }
       _paintItem($item);
     }
-    
-    function _destroyMenu(){
-      $(classes.menu).remove();
-    }
 
-    function _paintItem( $item ){
-      $item.find(_c(classes.unit)).each(function(){
-        var $unit = $(this);
-        var unit_value = $unit.find(_c(classes.unitInput)).val();
-        var $over = $unit.find(_c(classes.overSection));
-        
-        $unit.find(_c(classes.section)).each(function(){
-          $section = $(this);
-          var section_value = $section.find(_c(classes.sectionInput)).val();
-          $section = _addColorClass($section, _selectSectionClass(section_value), 'section');
-        });
-        
-        if(unit_value > 0){
-          _addColorClass($over, _selectUnitClass( unit_value ), 'unit');
-          $over.css('display', 'block');
-        }else{
-          $over.css('display', 'none');
-        }
-        
-        //_addColorClass($unit, _selectUnitClass( unit_value ), 'unit');
-        
-        /*
-        unit_value = $unit.find(_c(classes.unitInput)).val();
-        if(unit_value > 0){
-          
-          
-        }else{
-          
-          
-          $unit.find(_c(classes.section)).each(function(){
-            $section = $(this);
-            var section_value = $section.find(_c(classes.sectionInput)).val();
-            $section = _addColorClass($section, _selectSectionClass(section_value));
-          });
-        }*/
-      });
-      
-    }
     
-    function _addColorClass($itemElement, className, type){
-      if(type == 'unit'){
-        var remove_class = _join(options.unitClasses, " ");
-      }else{
-        var remove_class = _join(options.sectionClasses, " ");
-      }
-      
-      $itemElement
-        .removeClass(options.emptyColor +" "+remove_class)
-        .addClass(className);
-      return $itemElement;
-    }
-    
-    function _selectSectionClass( value ){
-      var color = options.emptyColor;
-      if( value > 0){
-        color = options.sectionClasses[value];
-      }
-      return color;
-    }
-    
-    function _selectUnitClass( value ){
-      var color = "";
-      if( value > 0){
-        color = options.unitClasses[value];
-      }
-      return color;
-    }
-    
+
     function _join(list, separator){
       var out = "";
       $.each(list, function(i, val) {
@@ -466,22 +592,7 @@
       return out.trim();
     }
     
-    function _onClickSection( $section ){
-      var $input = $section.find(_c(classes.sectionInput));
-      var value = parseInt( $input.val() );
-      var qtyColors = Object.keys(options.sectionClasses).length;
 
-      if( value < qtyColors ){
-        $input.val( value+1 );
-        color = _selectSectionClass( value+1 );
-      }else{
-        $input.val( 0 );
-        color = _selectSectionClass(0);
-      }
-      _addColorClass($section, color, 'section');
-      return $section;
-    }
-    
     function _getDataType(data, type){
       var out = [];
       data.forEach(function(i, v){
@@ -502,7 +613,11 @@
       return out;
     }
 
+    */
+
     return $(this);
   }
+
+  $.fn.reverse = [].reverse;
 
 })(jQuery);
