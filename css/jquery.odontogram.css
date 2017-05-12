@@ -44,6 +44,7 @@
 }
 
 .og-diagram .og-item .og-unit .og-over-section {
+  background-size: contain !important;
   position: absolute;
   top: 0;
   left: 0;

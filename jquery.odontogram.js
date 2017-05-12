@@ -1,5 +1,14 @@
 (function($) {
   $.fn.odontogram = function(method, aux){
+    
+    var itemData = {
+      dataItem: null,
+      unit: null,
+      section: null,
+      mobility: null,
+      recession: null,
+    }
+    
     var data = [
       {
         index: 1,
@@ -20,11 +29,11 @@
         title: 'Otra Cosa',
         type: 'section',
         figure: {background: "#00FF00"},
-        menu: false
+        menu: true
       },
       {
         type: 'separator',
-        menu: false // true
+        menu: true // true
       },
       {
         type: 'range',
@@ -34,21 +43,21 @@
         index: 1,
         title: 'Extracción Indicada',
         type: 'unit',
-        figure: {background: "url(\"../img/x-red.svg\")"},
+        figure: {background: "url(\"img/x-red.svg\")"},
         menu: true
       },
       {
         index: 2,
         title: 'Perdida por Caries',
         type: 'unit',
-        figure: {background: "url(\"../img/x-blue.svg\")"},
+        figure: {background: "url(\"img/x-blue.svg\")"},
         menu: true
       },
       {
         index: 3,
         title: 'Endodoncia',
         type: 'unit',
-        figure: {background: "url(\"../img/triangle.svg\")"},
+        figure: {background: "url(\"img/triangle.svg\")"},
         menu: true
       },
       {
@@ -56,10 +65,12 @@
         menu: true // false
       },
       {
-        index: 1,
         title: 'Ejecutar Función',
         type: 'function',
-        menu: true
+        menu: true,
+        action: function($item){
+          console.log($item);
+        }
       }
     ];
 
@@ -80,7 +91,7 @@
       itemSelector: '.og-quadrant > div',
 
       sectionClick: function($section){},
-      unitClick: function($unit){},
+      menuClick: function(){},
       changeItem: function($item){},
       sectionHover: function($section){},
       
@@ -243,7 +254,7 @@
         _destroyMenus();
         event.stopPropagation();
         var $item = $(this).closest(_c(classes.item));
-        //_displayMenu($item);
+        _displayMenu($item);
       });
       
       $odontogram.find(_c(classes.section)).on('click', function(){
@@ -398,7 +409,7 @@
         });
         
         if(unit_value > 0){
-          _addFigure($unit, 'unit', unit_value);
+          _addFigure($unit.find(_c(classes.overSection)), 'unit', unit_value);
           $over.css('display', 'block');
         }else{
           $over.css('display', 'none');
@@ -521,63 +532,16 @@
       return out;
     }
 
-    /* ************************************************************************ */
-    /* ************************************************************************ */
-    /* ************************************************************************ */
-    
-    
-    
-    /*
-    function _addColorClass($itemElement, className, type){
-      if(type == 'unit'){
-        var remove_class = _join(options.unitClasses, " ");
-      }else{
-        var remove_class = _join(options.sectionClasses, " ");
-      }
-      
-      $itemElement
-        .removeClass(options.emptyColor +" "+remove_class)
-        .addClass(className);
-      return $itemElement;
-    } */
-    
-    /*
-    function _selectSectionClass( value ){
-      var color = options.emptyColor;
-      if( value > 0){
-        color = options.sectionClasses[value];
-      }
-      return color;
-    }
-    
-    function _selectUnitClass( value ){
-      var color = "";
-      if( value > 0){
-        color = options.unitClasses[value];
-      }
-      return color;
-    }
-    */
-    
-    
-    /*
-    
-    function _getUnitClasses(index){
-      var uc;
-      menu.forEach(function(i, data){
-        if(data.type == 'unit'){
-          uc[data.value] = data.class
+    function _getMenuList(){
+      var menuList = [];
+      data.forEach(function(dataItem){
+        if(dataItem.menu){
+          menuList.push(dataItem);
         }
       });
-      
-      if(index === undefined){
-        return uc;
-      }{
-        return uc[index]
-      }
+      return menuList;
     }
-    
-    
+
     function _displayMenu($item){
       var menu = $('<ul />').addClass(classes.menu);
       var title = $('<li />')
@@ -585,20 +549,21 @@
         .html('<div>'+options.menuTitle.replace("%dataItem%", $item.data('item'))+'</div>');
       menu.append(title);
       
-      options.menu.forEach(function(itemMenu, i){
-        var imenu = $('<li />');
+      menuList = _getMenuList();
+      
+      menuList.forEach(function(itemMenu, i){
+        var menuDisplay = $('<li />');
           if(itemMenu.type == 'separator' || itemMenu.type == 'divider'){
-            imenu.addClass('ui-menu-divider');
+            menuDisplay.addClass('ui-menu-divider');
           }else{
-            imenu
-              .html('<div>'+itemMenu.title+'</div>')
+            menuDisplay.html('<div>'+itemMenu.title+'</div>')
               .on('click', function(){
                 _clickMenu(itemMenu, $item);
               });
           }
-        menu.append(imenu);
+        menu.append(menuDisplay);
       });
-      $item.append(menu);
+      $item.find(_c(classes.unit)).append(menu);
       menu.menu({
         items: "> :not(.ui-widget-header)"
       });
@@ -607,55 +572,27 @@
     function _clickMenu(itemMenu, $item){
       if(itemMenu.type == 'unit'){
         $item.find(_c(classes.sectionInput)).each(function(){
-          $(this).val(0);
+          $(this).val(options.emptyValue);
         });
         $item.find(_c(classes.unitInput)).each(function(){
-          $(this).val(itemMenu.value);
+          $(this).val(itemMenu.index);
         });
       }else if(itemMenu.type == 'section'){
         $item.find(_c(classes.sectionInput)).each(function(){
-          $(this).val(itemMenu.value);
+          $(this).val(itemMenu.index);
         });
         $item.find(_c(classes.unitInput)).each(function(){
-          $(this).val(0);
+          $(this).val(options.emptyValue);
         });
+      }else if(itemMenu.type == 'function'){
+        itemMenu.action($item);
       }
+      
+      options.menuClick(itemMenu.type, {});
+      
       _paintItem($item);
     }
-
     
-
-    function _join(list, separator){
-      var out = "";
-      $.each(list, function(i, val) {
-        out += separator+val;
-      });
-      return out.trim();
-    }
-    
-
-    function _getDataType(data, type){
-      var out = [];
-      data.forEach(function(i, v){
-        if(v['type'] == type){
-          out[i]=v;
-        }
-      });
-      return out;
-    }
-
-    function _getDataMenu(data){
-      var out = [];
-      data.forEach(function(i, v){
-        if(v['menu'] == true){
-          out[i]=v;
-        }
-      });
-      return out;
-    }
-
-    */
-
     return $(this);
   }
 
