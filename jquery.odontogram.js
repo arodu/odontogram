@@ -51,6 +51,16 @@
         figure: {background: "url(\"../img/triangle.svg\")"},
         menu: true
       },
+      {
+        type: 'separator',
+        menu: true // false
+      },
+      {
+        index: 1,
+        title: 'Ejecutar Función',
+        type: 'function',
+        menu: true
+      }
     ];
 
     var options = {}
@@ -60,9 +70,9 @@
       figureUnitEmpty: {background: "none"},
       emptyValue: '',
 
-      titleView: 'up', // up, down, false
-      mobilityView: 'up',   // up, down, false
-      recessionView: 'up',   // up, down, false
+      titleView: 'up', // up, down, false/none
+      mobilityView: 'up',   // up, down, false/none
+      recessionView: 'up',   // up, down, false/none
 
       menuTitle: 'Pieza %dataItem%',
       data: data,
@@ -86,6 +96,12 @@
       
       classes: {},
       
+      legend: {
+        mobility: "Movilidad",
+        recession: "Recesión",
+        title: "titulo",
+      },
+
       debug: true,
     };
 
@@ -107,6 +123,7 @@
       mobilityInput: 'og-mobility-input',
       recession: 'og-recession',
       recessionInput: 'og-recession-input',
+      itemLegend: 'og-item-legend',
     }
     
     var methods = {
@@ -160,7 +177,7 @@
       destroy($odontogram);
       $odontogram.addClass(classes.diagram);
       
-      $odontogram.find(options.itemSelector).each(function(){
+      $odontogram.find(options.itemSelector).not(_c(classes.itemLegend)).each(function(){
         $item = $(this);
         _generateItem($item, options.json);
         
@@ -277,7 +294,7 @@
       _destroyItem($item);
       $item.addClass(classes.item);
       var dataItem = $item.data('item');
-      
+      _loadConfig($item);
       // createUnit
       var $unit = $('<'+options.unitTag+' />')
         .addClass(classes.unit)
@@ -311,7 +328,7 @@
       // /createUnit
       
       // createTitle
-      if(options.titleView !== false){
+      if(options.titleView !== false && options.titleView !== "none"){
         var $item_title = $('<'+options.titleTag+' />').addClass(classes.title).html(dataItem);
         if(options.titleView == 'down'){
           $item.append( $item_title );
@@ -322,7 +339,7 @@
       // /createTitle
       
       // createMobility
-      if(options.mobilityView !== false){
+      if(options.mobilityView !== false && options.mobilityView !== "none"){
         //var $item_title = $('<'+options.titleTag+' />').addClass(classes.title).html(dataItem);
         var mobility_input_name = options.inputName+"[" +dataItem+"][mob]";
         var mobility_input = $('<input />').prop('type','text').prop('name',mobility_input_name)
@@ -337,7 +354,7 @@
       // /createMobility
       
       // createRecession
-      if(options.recessionView !== false){
+      if(options.recessionView !== false && options.recessionView !== "none"){
         //var $item_title = $('<'+options.titleTag+' />').addClass(classes.title).html(dataItem);
         var recession_input_name = options.inputName+"[" +dataItem+"][rec]";
         var recession_input = $('<input/>').prop('type','text').prop('name',recession_input_name)
@@ -471,7 +488,39 @@
       }
     }
     
-    
+    function _loadConfig($item){
+      $item.parents(_c(classes.config)).reverse().each(function(){
+        $.extend(options,_getDataConfig($(this)));
+      });
+      $.extend(options, _getDataConfig($item));
+    }
+
+    function _getDataConfig($tag){
+      var out = {};
+      if(size = $tag.data('size')){ // data-size
+        out['size'] = size;
+      }
+      if(titleView = $tag.data('title-view')){ // data-title-view
+        out['titleView'] = titleView;
+      }
+      if(mobilityView = $tag.data('mobility-view')){ // data-mobility-view
+        out['mobilityView'] = mobilityView;
+      }
+      if(recessionView = $tag.data('recession-view')){ // data-recession-view
+        out['recessionView'] = recessionView;
+      }
+      if(sectionTag = $tag.data('section-tag')){ // data-section-tag
+        out['sectionTag'] = sectionTag;
+      }
+      if(unitTag = $tag.data('unit-tag')){ // data-unit-tag
+        out['unitTag'] = unitTag;
+      }
+      if(titleTag = $tag.data('title-tag')){ // data-title-tag
+        out['titleTag'] = titleTag;
+      }
+      return out;
+    }
+
     /* ************************************************************************ */
     /* ************************************************************************ */
     /* ************************************************************************ */
