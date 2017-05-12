@@ -1,3 +1,16 @@
+/**
+ * 
+ * configs:
+ *    data-size
+ *    data-sectionTag
+ *    data-titleView
+ *    data-mobilityView
+ *    data-recessionView
+ *    data-sectionTag
+ *    data-unitTag
+ *    data-titleTag
+ */
+
 (function($) {
   $.fn.odontogram = function(method, aux){
     var data = [
@@ -53,9 +66,9 @@
       figureUnitEmpty: {background: "none"},
       emptyValue: 0,
 
-      titleView: 'up', // up, down, false
-      mobilityView: 'up',   // up, down, false
-      recessionView: 'up',   // up, down, false
+      titleView: 'up', // up, down, false/none
+      mobilityView: 'up',   // up, down, false/none
+      recessionView: 'up',   // up, down, false/none
 
       menuTitle: 'Pieza %dataItem%',
       data: data,
@@ -79,6 +92,12 @@
       
       classes: {},
       
+      legend: {
+        mobility: "Movilidad",
+        recession: "Recesión",
+        title: "titulo",
+      },
+
       debug: true,
     };
 
@@ -100,6 +119,7 @@
       mobilityInput: 'og-mobility-input',
       recession: 'og-recession',
       recessionInput: 'og-recession-input',
+      itemLegend: 'og-item-legend',
     }
     
     var methods = {
@@ -153,7 +173,7 @@
       destroy($odontogram);
       $odontogram.addClass(classes.diagram);
       
-      $odontogram.find(options.itemSelector).each(function(){
+      $odontogram.find(options.itemSelector).not(_c(classes.itemLegend)).each(function(){
         $item = $(this);
         _generateItem($item, options.json);
         
@@ -172,6 +192,11 @@
           });
         });
         _paintItem( $item );
+      });
+
+      $odontogram.find(_c(classes.itemLegend)).each(function(){
+        $itemLegen = $(this);
+        _generateItemLegend($itemLegen);
       });
       
       if(options.enable){
@@ -264,11 +289,23 @@
       return $item;
     }
     
+    function _generateItemLegend( $item ){
+      $item.addClass(classes.item);
+      _loadConfig($item);
+
+      var $unit = $('<'+options.unitTag+' />')
+        .addClass(classes.unit)
+        .css({height: options.size})
+        .html('Unit');
+
+      $item.append($unit);
+    }
+
     function _generateItem( $item, json ){
       _destroyItem($item);
       $item.addClass(classes.item);
       var dataItem = $item.data('item');
-      
+      _loadConfig($item);
       // createUnit
       var $unit = $('<'+options.unitTag+' />')
         .addClass(classes.unit)
@@ -302,7 +339,7 @@
       // /createUnit
       
       // createTitle
-      if(options.titleView !== false){
+      if(options.titleView !== false && options.titleView !== "none"){
         var $item_title = $('<'+options.titleTag+' />').addClass(classes.title).html(dataItem);
         if(options.titleView == 'down'){
           $item.append( $item_title );
@@ -313,7 +350,7 @@
       // /createTitle
       
       // createMobility
-      if(options.mobilityView !== false){
+      if(options.mobilityView !== false && options.mobilityView !== "none"){
         //var $item_title = $('<'+options.titleTag+' />').addClass(classes.title).html(dataItem);
         var mobility_input_name = options.inputName+"[" +dataItem+"][mob]";
         var mobility_input = $('<input />').prop('type','text').prop('name',mobility_input_name)
@@ -328,7 +365,7 @@
       // /createMobility
       
       // createRecession
-      if(options.recessionView !== false){
+      if(options.recessionView !== false && options.recessionView !== "none"){
         //var $item_title = $('<'+options.titleTag+' />').addClass(classes.title).html(dataItem);
         var recession_input_name = options.inputName+"[" +dataItem+"][rec]";
         var recession_input = $('<input/>').prop('type','text').prop('name',recession_input_name)
@@ -479,7 +516,41 @@
     
     
     
-    
+    function _loadConfig($item){
+      $item.parents(_c(classes.config)).reverse().each(function(){
+        $.extend(options,_getDataConfig($(this)));
+      });
+      $.extend(options, _getDataConfig($item));
+    }
+
+    function _getDataConfig($tag){
+      var out = {};
+      if(size = $tag.data('size')){
+        out['size'] = size;
+      }
+      if(titleView = $tag.data('titleview')){
+        out['titleView'] = titleView;
+      }
+      if(mobilityView = $tag.data('mobilityview')){
+        out['mobilityView'] = mobilityView;
+      }
+      if(recessionView = $tag.data('recessionview')){
+        out['recessionView'] = recessionView;
+      }
+      if(sectionTag = $tag.data('sectiontag')){
+        out['sectionTag'] = sectionTag;
+      }
+      if(unitTag = $tag.data('unittag')){
+        out['unitTag'] = unitTag;
+      }
+      if(titleTag = $tag.data('titletag')){
+        out['titleTag'] = titleTag;
+      }
+      console.log($tag.data());
+      console.log(out)
+      return out;
+    }
+
     /* ************************************************************************ */
     /* ************************************************************************ */
     /* ************************************************************************ */
