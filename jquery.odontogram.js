@@ -6,13 +6,20 @@
         title: 'Caries',
         type: 'section',
         figure: {background: "#FF0000"},
-        menu: false
+        menu: true
       },
       {
         index: 2,
         title: 'Restauración',
         type: 'section',
         figure: {background: "#0000FF"},
+        menu: true
+      },
+      {
+        index: 57,
+        title: 'Otra Cosa',
+        type: 'section',
+        figure: {background: "#00FF00"},
         menu: false
       },
       {
@@ -51,7 +58,7 @@
       size: '40px',
       figureSectionEmpty: {background: "#FFFFFF"},
       figureUnitEmpty: {background: "none"},
-      emptyValue: 0,
+      emptyValue: '',
 
       titleView: 'up', // up, down, false
       mobilityView: 'up',   // up, down, false
@@ -208,6 +215,8 @@
 
     function enable( $odontogram ){
       $odontogram.removeClass(classes.disable);
+      
+      $odontogram.find(_c(classes.input)).prop('disabled', false);
       
       $(window).click(function() {
         _destroyMenus();
@@ -377,9 +386,6 @@
         }else{
           $over.css('display', 'none');
         }
-        
-        //_addColorClass($unit, _selectUnitClass( unit_value ), 'unit');
-        
       });
     }
     
@@ -421,54 +427,42 @@
     function _destroyMenus(){
       $(_c(classes.menu)).remove();
     }
-
+    
     function _getListPosition(list, indexValue){
+      var out = false;
       list.forEach(function(v, i){
         if(v.index == indexValue){
-          return i;
+          out = i;
         }
       });
-      return false;
+      return out;
     }
-
+    
     function _onClickSection( $section ){
       var $input = $section.find(_c(classes.sectionInput));
       var value = $input.val();
       var dataSections = _getDataList('section');
-      console.log(value);
       
       pos = _getListPosition(dataSections, value);
       
-      
       if(pos === false){
-        $input.val(dataSections[0].index);
-        _addFigure($section, 'section', dataSections[0].index);
+        newValue = dataSections[0].index;
       }else{
-        console.log(pos);
-        pos = pos + 1;
-        $input.val(dataSections[pos].index);
-        _addFigure($section, 'section', dataSections[pos].index);
+        if(_isset(dataSections[pos + 1])){
+          newValue = dataSections[pos + 1].index;
+        }else{
+          newValue = options.emptyValue;
+        }
       }
       
-      /////////////// VOY POR AQUI!!!!!
-      
-      /*
-      var value = parseInt( $input.val() );
-      var qtyColors = Object.keys(options.sectionClasses).length;
-
-      if( value < qtyColors ){
-        $input.val( value+1 );
-        color = _selectSectionClass( value+1 );
-      }else{
-        $input.val( 0 );
-        color = _selectSectionClass(0);
-      }
-      _addColorClass($section, color, 'section');
-      */
-      
-      //_addFigure($section, 'section', value);
+      $input.val(newValue);
+      _addFigure($section, 'section', newValue);
       
       return $section;
+    }
+    
+    function _isset(object){
+      return (typeof object !=='undefined');
     }
     
     function debug(out){
@@ -476,8 +470,6 @@
         console.log(out);
       }
     }
-    
-    
     
     
     /* ************************************************************************ */
