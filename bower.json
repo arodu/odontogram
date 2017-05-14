@@ -21,6 +21,7 @@
   ],
   "dependencies": {
     "jquery": "^3.2.1",
-    "jquery-ui": "jqueryui#^1.12.1"
+    "jquery-ui": "jqueryui#^1.12.1",
+    "jquery.facheck": "http://github.com/arodu/jquery.facheck.git"
   }
 }

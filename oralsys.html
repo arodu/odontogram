@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Oralsys</title>
+    
+    <link rel="stylesheet" href="vendor/jquery-ui/themes/base/jquery-ui.min.css">
+    <link rel="stylesheet" href="vendor/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/jquery.odontogram.min.css">
+    <style media="screen">
+      body{
+        background-color: #ccc;
+      }
+    </style>
+    
+  </head>
+  <body>
+    
+    
+    <div id="odontogram" class="og-config" data-size="50px" data-title-view="up" data-mobility-view="up" data-recession-view="up" >
+      <div>
+        <div class="og-quadrant og-quadrant-1">
+          <div>
+            <div class="og-item-legend"></div>
+            <div data-item="18"></div>
+            <div data-item="17"></div>
+            <div data-item="16"></div>
+            <div data-item="15"></div>
+            <div data-item="14"></div>
+            <div data-item="13"></div>
+            <div data-item="12"></div>
+            <div data-item="11"></div>
+          </div>
+          <div style="text-align: right" class="og-config" data-mobility-view="none" data-recession-view="none">
+            <div data-item="55"></div>
+            <div data-item="54"></div>
+            <div data-item="53"></div>
+            <div data-item="52"></div>
+            <div data-item="51"></div>
+          </div>
+        </div>
+        <div class="og-quadrant og-quadrant-2">
+          <div>
+            <div data-item="21"></div>
+            <div data-item="22"></div>
+            <div data-item="23"></div>
+            <div data-item="24"></div>
+            <div data-item="25"></div>
+            <div data-item="26"></div>
+            <div data-item="27"></div>
+            <div data-item="28"></div>
+          </div>
+          <div class="og-config" data-mobility-view="none" data-recession-view="none">
+            <div data-item="61"></div>
+            <div data-item="62"></div>
+            <div data-item="63"></div>
+            <div data-item="64"></div>
+            <div data-item="65"></div>
+          </div>
+        </div>
+      </div>
+      <div class="og-config" data-mobility-view="down" data-recession-view="down">
+        <div class="og-quadrant og-quadrant-4">
+          <div style="text-align: right" class="og-config" data-mobility-view="none" data-recession-view="none">
+            <div data-item="85"></div>
+            <div data-item="84"></div>
+            <div data-item="83"></div>
+            <div data-item="82"></div>
+            <div data-item="81"></div>
+          </div>
+          <div>
+            <div data-item="48"></div>
+            <div data-item="47"></div>
+            <div data-item="46"></div>
+            <div data-item="45"></div>
+            <div data-item="44"></div>
+            <div data-item="43"></div>
+            <div data-item="42"></div>
+            <div data-item="41"></div>
+          </div>
+        </div>
+        <div class="og-quadrant og-quadrant-3">
+          <div class="og-config"  data-mobility-view="none" data-recession-view="none">
+            <div data-item="71"></div>
+            <div data-item="72"></div>
+            <div data-item="73"></div>
+            <div data-item="74"></div>
+            <div data-item="75"></div>
+          </div>
+          <div>
+            <div data-item="31"></div>
+            <div data-item="32"></div>
+            <div data-item="33"></div>
+            <div data-item="34"></div>
+            <div data-item="35"></div>
+            <div data-item="36"></div>
+            <div data-item="37"></div>
+            <div data-item="38"></div>
+          </div>
+        </div>
+      </div>
+    </div> <!-- -->
+    
+    
+    <!-- <div class="menu-hos" style="font-size: .8em; display: inline-block;"></div> -->
+    
+    
+    
+    <div id="matrizHOS" style="display: none;">
+      <div class="table-hos" style="font-size: .8em;">
+        <div class="ui-widget-header" style="padding: 0.2em;">Pieza ##</div>
+        <table style="border: 1px solid gray; background: #fff;">
+          <tr>
+            <th>#</th>
+            <th>Pla</th>
+            <th>Cal</th>
+            <th>Gin</th>
+          </tr>
+          <tr>
+            <th>0</th>
+            <td><input type='checkbox' name="placa" /></td>
+            <td><input type='checkbox' name="calcuclo" /></td>
+            <td><input type='checkbox' name="gingi" /></td>
+          </tr>
+          <tr>
+            <th>1</th>
+            <td><input type='checkbox' name="placa" /></td>
+            <td><input type='checkbox' name="calcuclo" /></td>
+            <td><input type='checkbox' name="gingi" /></td>
+          </tr>
+          <tr>
+            <th>2</th>
+            <td><input type='checkbox' name="placa" /></td>
+            <td><input type='checkbox' name="calcuclo" /></td>
+          </tr>
+          <tr>
+            <th>3</th>
+            <td><input type='checkbox' name="placa" /></td>
+            <td><input type='checkbox' name="calcuclo" /></td>
+          </tr>
+        </table>
+        <input type="button" value="Cerrar" />
+        <input type="button" value="Guardar" />
+      </div>
+    </div>
+    
+    <div style="position: relative">
+      <div class="menu-hos"></div>
+    </div>
+    
+    
+    <script src="vendor/jquery/dist/jquery.min.js" charset="utf-8"></script>
+    <script src="vendor/jquery-ui/jquery-ui.min.js" charset="utf-8"></script>
+    <script src="vendor/jquery.facheck/jquery.facheck.js" charset="utf-8"></script>
+    <script src="jquery.odontogram.js" charset="utf-8"></script>
+  
+    <script type="text/javascript">
+    var data = [
+      {
+        index: 1,
+        title: 'Caries',
+        type: 'section',
+        figure: {background: "#FF0000"},
+        menu: false
+      },
+      {
+        index: 2,
+        title: 'Obturado',
+        type: 'section',
+        figure: {background: "#0000FF"},
+        menu: false
+      },
+      {
+        type: 'separator',
+        menu: false // false
+      },
+      {
+        index: 1,
+        title: 'Sellante Necesario',
+        type: 'unit',
+        figure: {background: "url(\"img/asteric-red.svg\")"},
+        menu: true
+      },
+      {
+        index: 2,
+        title: 'Sellante Realizado',
+        type: 'unit',
+        figure: {background: "url(\"img/asteric-blue.svg\")"},
+        menu: true
+      },
+      {
+        index: 3,
+        title: 'Extracción Indicada',
+        type: 'unit',
+        figure: {background: "url(\"img/x-red.svg\")"},
+        menu: true
+      },
+      {
+        index: 4,
+        title: 'Perdida por Caries',
+        type: 'unit',
+        figure: {background: "url(\"img/x-blue.svg\")"},
+        menu: true
+      },
+      {
+        index: 5,
+        title: 'Perdida (otra causa)',
+        type: 'unit',
+        figure: {background: "url(\"img/x-circle-red.svg\")"},
+        menu: true
+      },
+      {
+        index: 6,
+        title: 'Endodoncia',
+        type: 'unit',
+        figure: {background: "url(\"img/triangle-red.svg\")"},
+        menu: true
+      },
+      {
+        index: 7,
+        title: 'Corona',
+        type: 'unit',
+        figure: {background: "url(\"img/square-3-red.svg\")"},
+        menu: true
+      },
+      {
+        type: 'separator',
+        menu: true // false
+      },
+      {
+        index: 8,
+        title: 'Protesis',
+        type: 'unit',
+        figure: {background: "url(\"img/dash-line-red.svg\")"},
+        menu: true
+      },
+      {
+        type: 'separator',
+        menu: true // false
+      },
+      {
+        title: 'Matriz H.O.S',
+        type: 'function',
+        menu: true,
+        action: function ($item){
+          $item.find('.og-unit').append( $('<div/>').hosMatrix() );
+        }
+      },
+      {
+        type: 'range',
+        title: 'Protesis Fija',
+        menu: false // true
+      },
+    ];
+      
+      $('#odontogram').odontogram({
+        itemSelector: '.og-quadrant > div > div',
+        data: data,
+      });
+      
+      $.widget("og.hosMatrix", {
+        _create: function(){
+            $w = $('<div />').addClass('og-hos-matrix ui-widget ui-widget-content');
+            $title = $('<div />').addClass('ui-widget-header').html('Pieza ##');
+            //$w.append($title);
+            
+            $content = $('<div />');
+            $table = $('<table />');
+            
+            thd = function(label){ return $('<th/>').addClass('ui-widget-header').html(label) };
+            tdd = function(label){ return $('<td/>').css('text-align','center').html(label) };
+            ind = function(name, value){
+               return $('<label/>').append($('<input/>').prop('type','radio').prop('name',name).prop('value',value))
+             };
+                        
+            $table.append(
+              $('<tr/>')
+                .append(thd(''))
+                .append(thd('Placa'))
+                .append(thd('Calculo'))
+                .append(thd('Gingivitis'))
+            ).append(
+              $('<tr/>')
+                .append(thd('0'))
+                .append(tdd(ind('pla','0')))
+                .append(tdd(ind('cal','0')))
+                .append(tdd(ind('gin','0')))
+            ).append(
+              $('<tr/>')
+                .append(thd('1'))
+                .append(tdd(ind('pla','1')))
+                .append(tdd(ind('cal','1')))
+                .append(tdd(ind('gin','1')))
+            ).append(
+              $('<tr/>')
+                .append(thd('2'))
+                .append(tdd(ind('pla','2')))
+                .append(tdd(ind('cal','2')))
+            ).append(
+              $('<tr/>')
+                .append(thd('3'))
+                .append(tdd(ind('pla','3')))
+                .append(tdd(ind('cal','3')))
+            );
+            
+            
+            //<tr>
+            //  <th>#</th>
+            //  <th>Pla</th>
+            //  <th>Cal</th>
+            //  <th>Gin</th>
+            //</tr>
+            
+            $content.append($table);
+            $w.append($content);
+          
+            $control = $('<div/>').css('text-align','right')
+              .append( $('<input/>').prop('type','button').prop('value','Cerrar').css('font-size','.8em').button().on('click', function(){
+                $(this).closest('.og-hos-matrix').remove()
+              }));
+          
+            $w.append($control);
+            this.element.html($w);
+            
+            this.element.find('input[type=radio]').facheck({
+              on: 'fa-check-square-o',
+              off: 'fa-square-o',
+              class: 'fa fa-fw',
+            })
+            
+          },
+        
+        /*
+        _create: function() { 
+                  this._button = $("<button>"); 
+                  this._button.text("My first Widget Button");
+                  $(this.element).append(this._button);
+                },
+        move: function(dx) { 
+                  var x = dx + parseInt(this._button.css("left")); 
+                  this._button.css("left", x); 
+                  if(x>400) { this._trigger("outbounds",{},  {position:x}); }
+                } */
+      });
+        
+        
+      $(".menu-hos").hosMatrix();
+      
+      
+    </script>
+    <style media="screen">
+      .table-hos, .og-hos-matrix{
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 100;
+        font-size: .8em;
+      }
+      
+      .og-hos-matrix label {
+        width: 100%;
+        display: inline-block;
+      }
+    </style>
+    
+  </body>
+</html>

@@ -113,7 +113,7 @@
         title: "titulo",
       },
 
-      debug: true,
+      debug: false,
     };
 
     var classes = {
@@ -180,7 +180,8 @@
     }
     
     function setData($odontogram, data_user){
-      $odontogram.data('data',data_user);
+      data = data_user;
+      $odontogram.data('data',data);
       return $odontogram;
     }
     
@@ -598,4 +599,4 @@
 
   $.fn.reverse = [].reverse;
 
-})(jQuery);
+})(window.jQuery);
