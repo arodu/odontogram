@@ -21,6 +21,6 @@
   ],
   "dependencies": {
     "jquery": "^3.2.1",
-    "jquery-ui": "jqueryui#^1.12.1",
+    "jquery-ui": "jqueryui#^1.12.1"
   }
 }
