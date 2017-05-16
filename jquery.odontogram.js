@@ -283,6 +283,12 @@
         
         return false;
       });
+      
+      $odontogram.find(_c(classes.mobilityInput)+","+_c(classes.recessionInput)).on('change', function(){
+        var $item = $section.closest(_c(classes.item));
+        options.changeItem($item);
+      });
+      
     }
     
     function empty( $odontogram ){
@@ -602,6 +608,7 @@
       }
       
       options.menuClick(itemMenu.type, {});
+      options.changeItem($item);
       
       _paintItem($item);
     }
