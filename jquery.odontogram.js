@@ -11,6 +11,11 @@
     
     var data = [
       {
+        title: 'Limpiar',
+        type: 'clean',
+        menu: true
+      },
+      {
         index: 1,
         title: 'Caries',
         type: 'section',
@@ -581,6 +586,13 @@
       }else if(itemMenu.type == 'section'){
         $item.find(_c(classes.sectionInput)).each(function(){
           $(this).val(itemMenu.index);
+        });
+        $item.find(_c(classes.unitInput)).each(function(){
+          $(this).val(options.emptyValue);
+        });
+      }else if(itemMenu.type == 'clean'){
+        $item.find(_c(classes.sectionInput)).each(function(){
+          $(this).val(options.emptyValue);
         });
         $item.find(_c(classes.unitInput)).each(function(){
           $(this).val(options.emptyValue);
