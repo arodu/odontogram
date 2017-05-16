@@ -13,6 +13,13 @@
       {
         title: 'Limpiar',
         type: 'clean',
+        all: false,
+        menu: true
+      },
+      {
+        title: 'Limpiar Todo',
+        type: 'clean',
+        all: true,
         menu: true
       },
       {
@@ -284,11 +291,6 @@
         return false;
       });
       
-      $odontogram.find(_c(classes.mobilityInput)+","+_c(classes.recessionInput)).on('change', function(){
-        var $item = $section.closest(_c(classes.item));
-        options.changeItem($item);
-      });
-      
     }
     
     function empty( $odontogram ){
@@ -366,7 +368,9 @@
         //var $item_title = $('<'+options.titleTag+' />').addClass(classes.title).html(dataItem);
         var mobility_input_name = options.inputName+"[" +dataItem+"][mob]";
         var mobility_input = $('<input />').prop('type','text').prop('name',mobility_input_name)
-          .addClass(classes.input).addClass(classes.mobilityInput);
+          .addClass(classes.input).addClass(classes.mobilityInput)
+          .prop('placeholder','Mov')
+          .change(function(){ options.changeItem($item) });
         var mobility = $('<div/>').addClass(classes.mobility).css({width: options.size}).html(mobility_input);
         if(options.mobilityView == 'down'){
           $item.append( mobility );
@@ -381,7 +385,9 @@
         //var $item_title = $('<'+options.titleTag+' />').addClass(classes.title).html(dataItem);
         var recession_input_name = options.inputName+"[" +dataItem+"][rec]";
         var recession_input = $('<input/>').prop('type','text').prop('name',recession_input_name)
-          .addClass(classes.input).addClass(classes.recessionInput);
+          .addClass(classes.input).addClass(classes.recessionInput)
+          .prop('placeholder','Rec')
+          .change(function(){ options.changeItem($item) });
         var recession = $('<div/>').addClass(classes.recession).css({width: options.size}).html(recession_input);
         if(options.recessionView == 'down'){
           $item.append( recession );
@@ -603,6 +609,12 @@
         $item.find(_c(classes.unitInput)).each(function(){
           $(this).val(options.emptyValue);
         });
+        if(itemMenu.all){
+          $item.find(_c(classes.recessionInput)+","+_c(classes.mobilityInput)).each(function(){
+            $(this).val(options.emptyValue);
+          });
+        }
+        
       }else if(itemMenu.type == 'function'){
         itemMenu.action($item);
       }
