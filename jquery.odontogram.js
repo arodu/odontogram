@@ -1,14 +1,6 @@
 (function($) {
   $.fn.odontogram = function(method, aux){
     
-    var itemData = {
-      dataItem: null,
-      unit: null,
-      section: null,
-      mobility: null,
-      recession: null,
-    }
-    
     var data = [
       {
         title: 'Limpiar',
@@ -670,6 +662,55 @@
       
       _paintItem($item);
     }
+    
+    return $(this);
+  }
+
+  $.fn.odontogramItem = function(method, aux){
+    var itemData = {
+      dataItem: null,
+      unit: null,
+      section: null,
+      mobility: null,
+      recession: null,
+    }
+    
+    var options = {}
+    var options_default = {
+      size: '40px',
+      figureSectionEmpty: {background: "#FFFFFF"},
+      figureUnitEmpty: {background: "none"},
+      emptyValue: '',
+
+      titleView: 'up', // up, down, false/none
+      mobilityView: 'up',   // up, down, false/none
+      recessionView: 'up',   // up, down, false/none
+
+      menuTitle: 'Pieza %dataItem%',
+      data: data,
+
+      //itemSelector: '.og-quadrant > div',
+
+      sectionClick: function($section){},
+      menuClick: function(){},
+      changeItem: function($item){},
+      sectionHover: function($section){},
+      
+      json: {},
+      
+      inputName: 'odontogram',
+
+      sectionTag: 'span',
+      unitTag: 'div',
+      titleTag: 'div',
+      
+      enable: true,
+      
+      classes: {},
+      
+      debug: false,
+    };
+    
     
     return $(this);
   }
