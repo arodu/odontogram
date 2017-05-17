@@ -159,7 +159,7 @@
       disable: function( $odontogram ){ $odontogram.each(function(){ disable( $(this) ) }); return $odontogram; },
       enable: function( $odontogram ){ $odontogram.each(function(){ enable( $(this) ) }); return $odontogram; },
       empty: function( $odontogram ){ $odontogram.each(function(){ empty( $(this) ) }); return $odontogram; },
-      //loadJson: function( $odontogram, json ){ return loadJson( $odontogram, json ) },
+      loadJson: function( $odontogram, json ){ $odontogram.each(function(){ loadJson( $(this), json ) }); return $odontogram; },
       //unloadJson: function( $odontogram, toText ){ return unloadJson( $odontogram, toText ) },
     };
     
@@ -306,6 +306,14 @@
       return $odontogram;
     }
     
+    function loadJson($odontogram, json){
+      $odontogram.find(_c(classes.item)).each(function(){
+        _loadJsonItem($(this), json);
+      });
+      paint($odontogram);
+      return $odontogram;
+    }
+    
     /* ************************************************************************ */
     
     function _destroyItem( $item ){
@@ -341,7 +349,7 @@
         var section_input_name = options.inputName+"[" +dataItem+"]["+section+"]";
         var $section_input = $('<input />')
           .prop('type','hidden').prop('name',section_input_name).val(options.emptyValue)
-          .addClass(classes.input).addClass(classes.sectionInput);
+          .addClass(classes.input).addClass(classes.sectionInput).addClass(classes.sectionInput+"-"+section);
 
         $section.html($section_input);
         $unit.append( $section );
@@ -363,14 +371,21 @@
       }
       // /createTitle
       
+      var values = ['', '1', '2', '3'];
+      
       // createMobility
       if(options.mobilityView !== false && options.mobilityView !== "none"){
         //var $item_title = $('<'+options.titleTag+' />').addClass(classes.title).html(dataItem);
         var mobility_input_name = options.inputName+"[" +dataItem+"][mob]";
-        var mobility_input = $('<input />').prop('type','text').prop('name',mobility_input_name)
+        
+        var mobility_input = $('<select />').prop('name',mobility_input_name)
           .addClass(classes.input).addClass(classes.mobilityInput)
           .prop('placeholder','Mov')
           .change(function(){ options.changeItem($item) });
+        values.forEach(function(val){
+          mobility_input.append( $('<option>', {value: val, text: val}) );
+        });
+        
         var mobility = $('<div/>').addClass(classes.mobility).css({width: options.size}).html(mobility_input);
         if(options.mobilityView == 'down'){
           $item.append( mobility );
@@ -384,10 +399,17 @@
       if(options.recessionView !== false && options.recessionView !== "none"){
         //var $item_title = $('<'+options.titleTag+' />').addClass(classes.title).html(dataItem);
         var recession_input_name = options.inputName+"[" +dataItem+"][rec]";
-        var recession_input = $('<input/>').prop('type','text').prop('name',recession_input_name)
+        var recession_input = $('<select />').prop('name',recession_input_name)
           .addClass(classes.input).addClass(classes.recessionInput)
           .prop('placeholder','Rec')
           .change(function(){ options.changeItem($item) });
+        values.forEach(function(val){
+          recession_input.append( $('<option>', {value: val, text: val}) );
+        });
+        //var recession_input = $('<input/>').prop('type','text').prop('name',recession_input_name)
+        //  .addClass(classes.input).addClass(classes.recessionInput)
+        //  .prop('placeholder','Rec')
+        //  .change(function(){ options.changeItem($item) });
         var recession = $('<div/>').addClass(classes.recession).css({width: options.size}).html(recession_input);
         if(options.recessionView == 'down'){
           $item.append( recession );
@@ -405,7 +427,31 @@
     }
     
     function _loadJsonItem($item, json){
-      // ToDo
+      var dataItem = $item.data('item');
+      $item.find(_c(classes.input)).each(function(){
+        $input = $(this);
+        var review = {
+          'unit': classes.unitInput,
+          'mob': classes.mobilityInput,
+          'rec': classes.recessionInput,
+          'up': classes.sectionInput+"-up",
+          'down': classes.sectionInput+"-down",
+          'right': classes.sectionInput+"-right",
+          'left': classes.sectionInput+"-left",
+          'center': classes.sectionInput+"-center"
+        };
+
+        $.each(review, function(index, class_value){
+          console.log(class_value);
+          if($input.hasClass(class_value)){
+            //console.log(typeof(json[dataItem][index]));
+            if( (dataItem in json) && (index in json[dataItem])){
+              $input.val(json[dataItem][index]);
+            }
+          }
+        });
+        
+      });
       return $item;
     }
     
