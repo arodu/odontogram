@@ -88,14 +88,18 @@
       titleView: 'up', // up, down, false/none
       mobilityView: 'up',   // up, down, false/none
       recessionView: 'up',   // up, down, false/none
+      
+      // Order to view de item
+        viewFormat: 'title,unit,recession,mobility', // any order of title,unit,recession,mobility
 
       menuTitle: 'Pieza %dataItem%',
       data: data,
 
       itemSelector: '.og-quadrant > div',
 
-      sectionClick: function($section){},
-      menuClick: function(){},
+      sectionClick: function($section, $item){},
+      menuClick: function(itemMenu, $item){},
+      changeSelect: function($item){},
       changeItem: function($item){},
       sectionHover: function($section){},
       
@@ -256,6 +260,7 @@
       });
 
       $odontogram.find(_c(classes.title)).on('click', function(event){
+        _reloadValues($odontogram);
         _destroyMenus();
         event.stopPropagation();
         var $item = $(this).closest(_c(classes.item));
@@ -269,15 +274,11 @@
         var $section_input = $section.find(_c(classes.sectionInput));
         var $unit_input = $item.find(_c(classes.unitInput));
         
-        _onClickSection( $section );
+        _reloadValues($odontogram);
         
-        options.sectionClick({
-          'item': $item.data('item'),
-          'section': $section.data('section'),
-          'section_value': $section_input.val(),
-          'unit_value': $unit_input.val()
-        });
+        _onClickSection($section);
         
+        options.sectionClick($section, $item);
         options.changeItem($item);
         
         return false;
@@ -307,6 +308,12 @@
     }
     
     /* ************************************************************************ */
+    
+    function _reloadValues($odontogram){
+      data = $odontogram.data('data');
+      classes = $odontogram.data('classes');
+      options = $odontogram.data('options');
+    }
     
     function _destroyItem( $item ){
       $item.removeClass(classes.item);
@@ -363,8 +370,8 @@
       }
       // /createTitle
       
-      var values = ['', '1', '2', '3'];
       
+      var values = ['', '1', '2', '3'];
       // createMobility
       if(options.mobilityView !== false && options.mobilityView !== "none"){
         //var $item_title = $('<'+options.titleTag+' />').addClass(classes.title).html(dataItem);
@@ -373,7 +380,10 @@
         var mobility_input = $('<select />').prop('name',mobility_input_name)
           .addClass(classes.input).addClass(classes.mobilityInput)
           .prop('placeholder','Mov')
-          .change(function(){ options.changeItem($item) });
+          .change(function(){
+            options.changeSelect($item);
+            options.changeItem($item);
+          });
         values.forEach(function(val){
           mobility_input.append( $('<option>', {value: val, text: val}) );
         });
@@ -394,7 +404,10 @@
         var recession_input = $('<select />').prop('name',recession_input_name)
           .addClass(classes.input).addClass(classes.recessionInput)
           .prop('placeholder','Rec')
-          .change(function(){ options.changeItem($item) });
+          .change(function(){
+            options.changeSelect($item);
+            options.changeItem($item)
+          });
         values.forEach(function(val){
           recession_input.append( $('<option>', {value: val, text: val}) );
         });
@@ -434,7 +447,7 @@
         };
 
         $.each(review, function(index, class_value){
-          console.log(class_value);
+          //console.log(class_value);
           if($input.hasClass(class_value)){
             //console.log(typeof(json[dataItem][index]));
             if( (dataItem in json) && (index in json[dataItem])){
@@ -585,6 +598,9 @@
       if(titleTag = $tag.data('title-tag')){ // data-title-tag
         out['titleTag'] = titleTag;
       }
+      if(viewFormat = $tag.data('view-format')){ // data-view-format
+        out['viewFormat'] = viewFormat;
+      }
       return out;
     }
 
@@ -657,7 +673,7 @@
         itemMenu.action($item);
       }
       
-      options.menuClick(itemMenu.type, {});
+      options.menuClick(itemMenu.type, $item);
       options.changeItem($item);
       
       _paintItem($item);
