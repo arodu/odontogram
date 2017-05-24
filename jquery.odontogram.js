@@ -107,6 +107,7 @@
 
       sectionClick: function($section, $item){},
       menuClick: function(itemMenu, $item){},
+      changeSelect: function($item){},
       changeItem: function($item){},
       sectionHover: function($section){},
       
@@ -377,8 +378,8 @@
       }
       // /createTitle
       
-      var values = ['', '1', '2', '3'];
       
+      var values = ['', '1', '2', '3'];
       // createMobility
       if(options.mobilityView !== false && options.mobilityView !== "none"){
         //var $item_title = $('<'+options.titleTag+' />').addClass(classes.title).html(dataItem);
@@ -387,7 +388,10 @@
         var mobility_input = $('<select />').prop('name',mobility_input_name)
           .addClass(classes.input).addClass(classes.mobilityInput)
           .prop('placeholder','Mov')
-          .change(function(){ options.changeItem($item) });
+          .change(function(){
+            options.changeSelect($item);
+            options.changeItem($item);
+          });
         values.forEach(function(val){
           mobility_input.append( $('<option>', {value: val, text: val}) );
         });
@@ -408,7 +412,10 @@
         var recession_input = $('<select />').prop('name',recession_input_name)
           .addClass(classes.input).addClass(classes.recessionInput)
           .prop('placeholder','Rec')
-          .change(function(){ options.changeItem($item) });
+          .change(function(){
+            options.changeSelect($item);
+            options.changeItem($item)
+          });
         values.forEach(function(val){
           recession_input.append( $('<option>', {value: val, text: val}) );
         });
