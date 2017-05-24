@@ -1,4 +1,73 @@
 (function($) {
+
+  $.fn.ogItem = function(options){
+    var $item = $(this);
+    
+    var values = {
+      unit: null,
+      left: null,
+      right: null,
+      center: null,
+      up: null,
+      down: null,
+      mobility: null,
+      recession: null,
+    }
+    
+    options = $.extend({
+      format: 'title,unit,mobility,recession',
+      
+    },options);
+    
+    $item.classes = {
+      item: 'og-item',
+      unit: 'og-unit',
+      section: 'og-section',
+    }
+    
+    $item.init = function(){
+      $item.addClass($item.classes.item);
+      create();
+    }
+    
+    $item.getValues = function(){
+      return values;
+    }
+    
+    function create(){
+      var format = options.format.split(',');
+      format.forEach(function(v, i){
+        switch (v) {
+          case 'mobility':
+            console.log('mobility');
+          break;
+          case 'recession':
+            console.log('recession');
+          break;
+          case 'title':
+            console.log('title');
+          break;
+          case 'unit':
+            console.log('unit');
+          break;
+        }
+      });
+    }
+    
+    function create_title(){
+      
+      
+      
+    }
+    
+    $item.init();
+    return $item;
+  }
+  
+})(window.jQuery);
+
+/*
+(function($) {
   $.fn.odontogram = function(method, aux){
     
     var data = [
@@ -307,7 +376,7 @@
       return $odontogram;
     }
     
-    /* ************************************************************************ */
+    // ************************************************************************ 
     
     function _reloadValues($odontogram){
       data = $odontogram.data('data');
@@ -733,4 +802,4 @@
 
   $.fn.reverse = [].reverse;
 
-})(window.jQuery);
+})(window.jQuery); */
