@@ -15,7 +15,7 @@
     }
     
     options = $.extend({
-      format: 'title,unit,mobility,recession',
+      format: 'icon,title,unit,mobility,recession',
       
     },options);
     
