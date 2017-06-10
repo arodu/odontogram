@@ -145,6 +145,7 @@
       disable: 'og-disable',
       menu: 'og-menu',
       menuItem: 'og-menu-item',
+      menuIcon: 'og-menu-icon',
       overSection: 'og-over-section',
       mobility: 'og-mobility',
       mobilityInput: 'og-mobility-input',
@@ -164,6 +165,7 @@
       enable: function( $odontogram ){ $odontogram.each(function(){ enable( $(this) ) }); return $odontogram; },
       empty: function( $odontogram ){ $odontogram.each(function(){ empty( $(this) ) }); return $odontogram; },
       loadJson: function( $odontogram, json ){ $odontogram.each(function(){ loadJson( $(this), json ) }); return $odontogram; },
+      getItem: function( $odontogram, dataItem ){ return getItem( $odontogram, dataItem ) },
       //unloadJson: function( $odontogram, toText ){ return unloadJson( $odontogram, toText ) },
     };
     
@@ -313,6 +315,10 @@
       });
       paint($odontogram);
       return $odontogram;
+    }
+    
+    function getItem($odontogram, dataItem){
+      return $odontogram.find(options.itemSelector+"[data-item='" + dataItem + "']");
     }
     
     /* ************************************************************************ */
@@ -636,7 +642,14 @@
           if(itemMenu.type == 'separator' || itemMenu.type == 'divider'){
             menuDisplay.addClass('ui-menu-divider');
           }else{
-            menuDisplay.html('<div>'+itemMenu.title+'</div>')
+            var out = $('<div />');
+            var $icon = $('<div />').addClass(classes.menuIcon)
+            if(_isset(itemMenu.figure)){
+              $icon.css(itemMenu.figure);
+            }
+            out.append($icon);
+            out.append(itemMenu.title);
+            menuDisplay.html(out)
               .on('click', function(){
                 _clickMenu(itemMenu, $item);
               });
