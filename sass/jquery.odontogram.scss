@@ -78,8 +78,15 @@
         top: 0;
         left: 0;
         
-      &.ui-menu { width: 140px; }
+      &.ui-menu { width: 200px; }
       .ui-widget-header { padding: 0.2em; }
+      .og-menu-icon{
+        width: 12px;
+        height: 12px;
+        display: inline-block;
+        margin-right: 4px;
+        background-size: contain !important;
+      }
     }
   
     .og-mobility, .og-recession{

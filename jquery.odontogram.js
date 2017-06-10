@@ -20,7 +20,8 @@
         title: 'Limpiar Todo',
         type: 'clean',
         all: true,
-        menu: true
+        menu: true,
+        //figure: {background: "#CCC", "border-radius": "50%"},
       },
       {
         index: 1,
@@ -69,7 +70,7 @@
         index: 3,
         title: 'Endodoncia',
         type: 'unit',
-        figure: {background: "url(\"img/triangle.svg\")"},
+        figure: {background: "url(\"img/triangle-red.svg\")"},
         menu: true
       },
       {
