@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Odontogram</title>
+    
+    <link rel="stylesheet" href="vendor/jquery-ui/themes/base/jquery-ui.min.css">
+    <link rel="stylesheet" href="css/jquery.odontogram.min.css">
+    <style media="screen">
+      body{
+        background-color: #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    
+    <!-- 
+    <div class="odontogram og-style-square-round">
+      <div>
+        <div class="og-quadrant og-quadrant-1">
+          <div data-item="18"></div>
+          <div data-item="17"></div>
+          <div data-item="16"></div>
+          <div data-item="15"></div>
+          <div data-item="14"></div>
+          <div data-item="13"></div>
+          <div data-item="12"></div>
+          <div data-item="11"></div>
+        </div>
+        <div class="og-quadrant og-quadrant-2">
+          <div data-item="21"></div>
+          <div data-item="22"></div>
+          <div data-item="23"></div>
+          <div data-item="24"></div>
+          <div data-item="25"></div>
+          <div data-item="26"></div>
+          <div data-item="27"></div>
+          <div data-item="28"></div>
+        </div>
+      </div>
+      <div>
+        <div class="og-quadrant og-quadrant-4">
+          <div data-item="48"></div>
+          <div data-item="47"></div>
+          <div data-item="46"></div>
+          <div data-item="45"></div>
+          <div data-item="44"></div>
+          <div data-item="43"></div>
+          <div data-item="42"></div>
+          <div data-item="41"></div>
+        </div>
+        <div class="og-quadrant og-quadrant-3">
+          <div data-item="31"></div>
+          <div data-item="32"></div>
+          <div data-item="33"></div>
+          <div data-item="34"></div>
+          <div data-item="35"></div>
+          <div data-item="36"></div>
+          <div data-item="37"></div>
+          <div data-item="38"></div>
+        </div>
+      </div>
+    </div>
+    
+    <br/><br/>
+    
+    <div class="odontogram og-style-cross">
+      <div>
+        <div class="og-quadrant og-quadrant-1">
+          <div data-item="55"></div>
+          <div data-item="54"></div>
+          <div data-item="53"></div>
+          <div data-item="52"></div>
+          <div data-item="51"></div>
+        </div>
+        <div class="og-quadrant og-quadrant-2">
+          <div data-item="61"></div>
+          <div data-item="62"></div>
+          <div data-item="63"></div>
+          <div data-item="64"></div>
+          <div data-item="65"></div>
+        </div>
+      </div>
+      <div>
+        <div class="og-quadrant og-quadrant-4">
+          <div data-item="85"></div>
+          <div data-item="84"></div>
+          <div data-item="83"></div>
+          <div data-item="82"></div>
+          <div data-item="81"></div>
+        </div>
+        <div class="og-quadrant og-quadrant-3">
+          <div data-item="71"></div>
+          <div data-item="72"></div>
+          <div data-item="73"></div>
+          <div data-item="74"></div>
+          <div data-item="75"></div>
+        </div>
+      </div>
+    </div>
+    
+    <br/><br/>
+    <div class="odontogram og-style-circles">
+      <div>
+        <div class="og-quadrant og-quadrant-1">
+          <div data-item="55"></div>
+          <div data-item="54"></div>
+          <div data-item="53"></div>
+          <div data-item="52"></div>
+          <div data-item="51"></div>
+        </div>
+        <div class="og-quadrant og-quadrant-2">
+          <div data-item="61"></div>
+          <div data-item="62"></div>
+          <div data-item="63"></div>
+          <div data-item="64"></div>
+          <div data-item="65"></div>
+        </div>
+      </div>
+      <div>
+        <div class="og-quadrant og-quadrant-4">
+          <div data-item="85"></div>
+          <div data-item="84"></div>
+          <div data-item="83"></div>
+          <div data-item="82"></div>
+          <div data-item="81"></div>
+        </div>
+        <div class="og-quadrant og-quadrant-3">
+          <div data-item="71"></div>
+          <div data-item="72"></div>
+          <div data-item="73"></div>
+          <div data-item="74"></div>
+          <div data-item="75"></div>
+        </div>
+      </div>
+    </div>
+    
+    <br/><br/>
+    -->
+    
+    <div id="one-item" data-item="18"></div>
+    
+    <!--
+    
+    <div id="odontogram2" class="og-config" data-size="50px" data-title-view="up" data-mobility-view="up" data-recession-view="up" >
+      <div>
+        <div class="og-quadrant og-quadrant-1">
+          <div>
+            <div class="og-item-legend"></div>
+            <div data-item="18"></div>
+            <div data-item="17"></div>
+            <div data-item="16"></div>
+            <div data-item="15"></div>
+            <div data-item="14"></div>
+            <div data-item="13"></div>
+            <div data-item="12"></div>
+            <div data-item="11"></div>
+          </div>
+          <div style="text-align: right" class="og-config" data-mobility-view="none" data-recession-view="none">
+            <div data-item="55"></div>
+            <div data-item="54"></div>
+            <div data-item="53"></div>
+            <div data-item="52"></div>
+            <div data-item="51"></div>
+          </div>
+        </div>
+        <div class="og-quadrant og-quadrant-2">
+          <div>
+            <div data-item="21"></div>
+            <div data-item="22"></div>
+            <div data-item="23"></div>
+            <div data-item="24"></div>
+            <div data-item="25"></div>
+            <div data-item="26"></div>
+            <div data-item="27"></div>
+            <div data-item="28"></div>
+          </div>
+          <div class="og-config" data-mobility-view="none" data-recession-view="none">
+            <div data-item="61"></div>
+            <div data-item="62"></div>
+            <div data-item="63"></div>
+            <div data-item="64"></div>
+            <div data-item="65"></div>
+          </div>
+        </div>
+      </div>
+      <div class="og-config" data-mobility-view="down" data-recession-view="down">
+        <div class="og-quadrant og-quadrant-4">
+          <div style="text-align: right" class="og-config" data-mobility-view="none" data-recession-view="none">
+            <div data-item="85"></div>
+            <div data-item="84"></div>
+            <div data-item="83"></div>
+            <div data-item="82"></div>
+            <div data-item="81"></div>
+          </div>
+          <div>
+            <div data-item="48"></div>
+            <div data-item="47"></div>
+            <div data-item="46"></div>
+            <div data-item="45"></div>
+            <div data-item="44"></div>
+            <div data-item="43"></div>
+            <div data-item="42"></div>
+            <div data-item="41"></div>
+          </div>
+        </div>
+        <div class="og-quadrant og-quadrant-3">
+          <div class="og-config"  data-mobility-view="none" data-recession-view="none">
+            <div data-item="71"></div>
+            <div data-item="72"></div>
+            <div data-item="73"></div>
+            <div data-item="74"></div>
+            <div data-item="75"></div>
+          </div>
+          <div>
+            <div data-item="31"></div>
+            <div data-item="32"></div>
+            <div data-item="33"></div>
+            <div data-item="34"></div>
+            <div data-item="35"></div>
+            <div data-item="36"></div>
+            <div data-item="37"></div>
+            <div data-item="38"></div>
+          </div>
+        </div>
+      </div>
+    </div> <!-- -->
+    
+    <!--
+    <div class="controls2">
+      <input type="button" class="init" value="Init" />
+      <input type="button" class="destroy" value="Destroy" />
+      <input type="button" class="lock" value="Lock" />
+      <input type="button" class="unlock" value="Unlock" />
+      <input type="button" class="empty" value="Empty" />
+    </div>
+    -->
+    
+    <script src="vendor/jquery/dist/jquery.min.js" charset="utf-8"></script>
+    <script src="vendor/jquery-ui/jquery-ui.min.js" charset="utf-8"></script>
+    <script src="jquery.odontogram.js" charset="utf-8"></script>
+    <!-- <script src="demo.js" charset="utf-8"></script> -->
+    <script type="text/javascript">
+      $oneItem = $('#one-item').ogItem();
+    </script>
+  </body>
+</html>

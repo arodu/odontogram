@@ -1,0 +1,151 @@
+// general
+
+@import "mixins";
+
+.og-diagram{
+  //margin: 4px;
+  display: inline-block;
+  //position: relative;
+  
+  font-size: 1px;
+  letter-spacing: -1px;
+  //width: 80%;/*o lo necesario*/
+  //margin: auto;
+  
+  .og-quadrant{
+    display: inline-block;
+    padding: 5px;
+    /*&.og-quadrant-1{
+      border-right: 1px #000 solid;
+      border-bottom: 1px #000 solid;
+    }
+    &.og-quadrant-3{
+      border-top: 1px #000 solid;
+    }
+    &.og-quadrant-4{
+      border-right: 1px #000 solid;
+    }*/
+  }
+  
+  .og-item{
+    display: inline-block;
+    position: relative;
+    
+    word-spacing: normal;
+    font-size: 1rem;/*u otra unidad para IE8 y -*/
+    letter-spacing: normal;
+    white-space: normal;
+    //width: 25%;/*El valor necesario*/
+    
+    .og-title{
+      font-size: .8em;
+      text-align: center;
+      margin: 0 2px;
+      text-decoration: none;
+      display: block;
+      cursor: pointer;
+    }
+    
+    .og-unit {
+      position: relative;
+      margin: 0 2px;
+      
+      .og-over-section{
+        background-size: contain !important;
+        position: absolute;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          right: 0;
+        display: none;
+      }
+      
+      .og-section{
+        
+        &:hover{
+          opacity: .6;
+        }
+        
+        @import '_style_cross_round';
+      }
+    }
+  
+    .og-menu{
+      font-size: .8em;
+      text-align: left;
+      z-index: 100;
+      position: absolute;
+        top: 0;
+        left: 0;
+        
+      &.ui-menu { width: 140px; }
+      .ui-widget-header { padding: 0.2em; }
+    }
+  
+    .og-mobility, .og-recession{
+      text-align: center;
+      margin: 0 2px;
+    }
+    
+    .og-mobility-input, .og-recession-input{
+      width: 70%;
+      font-size: .7em;
+      border: 0px;
+      @include border-radius(4px);
+    }
+  
+  }
+  
+  // Colors
+    &.og-bg-color{
+      background-color: #AAA;
+    }
+  
+    .og-empty-color{
+      background-color: #FFF;
+    }
+    
+    .og-red{
+      background-color: #F00;
+    }
+    
+    .og-blue{
+      background-color: #00F;
+    }
+    
+    .og-x-red{
+      background: url("../img/x-red.svg");
+      background-size: contain;
+    }
+    
+    .og-x-blue{
+      background-image: url("../img/x-blue.svg"), none;
+      background-size: contain;
+    }
+    
+    .og-triangle{
+      background-image: url("../img/triangle.svg"), none;
+      background-size: contain;
+    }
+    
+    .og-test{
+      margin-left: -2px;
+      margin-right: -2px;
+      background-image: url("../img/dash-line.svg"), none;
+      background-size: contain;
+    }
+    
+
+  &.og-style-cross .og-item .og-unit .og-section {
+    @import '_style_cross';
+  }
+
+  &.og-style-square-round .og-item .og-unit .og-section {
+    @import '_style_square_round';
+  }
+
+  &.og-style-circles .og-item .og-unit .og-section {
+    @import '_style_circles';
+}
+
+}
