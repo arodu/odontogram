@@ -14,7 +14,9 @@
       z-index: 100;
       position: absolute;
         top: 0; left: 0;
-      &.ui-menu { width: 200px; }
+      &.ui-menu {
+        width: 200px;
+      }
       .ui-widget-header {
         padding: 0.2em;
         div, img{
@@ -24,19 +26,14 @@
           margin-right: 4px;
         }
       }
-      
       .og-menu-icon{
         display: inline-block;
         margin-right: 4px;
         width: 15px;
         height: 15px;
         background-size: contain !important;
-        
-        
       }
-      
     }
-    
   }
   
   .og-title{

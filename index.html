@@ -36,15 +36,21 @@
       $one = $('#item-one').ogItem();
       $one.enable(false);
       
-      $('#item-two').ogItem();
-      $('#item-tree').ogItem();
-      $four = $('#item-four').ogItem({
-        'menu-title': 'Pieza %dataItem%',
+      $('#item-two').ogItem({
+        'menu-title': 'Unidad No. %dataItem%',
         beforeChange: function($item){
-          console.log($item.getValues());
+          console.log($item.getValue());
         }
       });
       
+      $('#item-tree').ogItem();
+      
+      $four = $('#item-four').ogItem({
+        'menu-title': 'Pieza %dataItem%',
+        beforeChange: function($item){
+          console.log($item.getValue());
+        }
+      });
     </script>
   </body>
 </html>

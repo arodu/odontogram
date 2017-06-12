@@ -77,11 +77,11 @@
      }
    ];
 
-  $.fn.odontogram = function(options){
+  $.fn.odontogram = function(user_options){
     
   }
 
-  $.fn.ogItem = function(options){
+  $.fn.ogItem = function(user_options){
     var $item = $(this);
     var dataItem;
     var values = {};
@@ -101,8 +101,8 @@
       'icon-height': '50px',
       'icon-text-aling': '15%',
       'icon-aling': 'down', // top, center, down
-      'mobility-values': ['', '1', '2', '3'],
-      'recession-values': ['', '1', '2', '3'],
+      'mobility-values': ['1', '2', '3'],
+      'recession-values': ['1', '2', '3'],
       
       'debug': true,
       
@@ -110,7 +110,7 @@
       buttonMenuClick: function(){},
       selectChange: function(){},
       beforeChange: function(){},
-    },options);
+    },user_options);
     
     var classes = {
       config: 'og-config',
@@ -149,23 +149,9 @@
       }
     }
     
-    $item.empty = function(){
-      values = $.extend(values,{
-        unit: null,
-        left: null,
-        right: null,
-        center: null,
-        up: null,
-        down: null,
-        mobility: null,
-        recession: null,
-      });
-      paint();
-    }
-    
-    $item.getValues = function(){
-      return values;
-    }
+    //$item.empty = function(){
+    //  paint();
+    //}
     
     $item.setOptions = function(){}
     
@@ -173,9 +159,39 @@
       options['data'] = data;
     }
     
-    $item.setValues = function(new_values){
-      values = $.extend(values, new_values);
+    $item.setValue = function(parts, new_value){
+      if(typeof parts === 'string'){
+        setValue(parts, new_value);
+      }else{
+        parts.forEach(function(part){
+          setValue(part, new_value);
+        });
+      }
+      updateForm();
       paint();
+    }
+    
+    function setValue(part, new_value){
+      values[part] = new_value;
+      var sections = options['sections'].split(',');
+      if(part == 'unit'){  
+        sections.forEach(function(section){
+          values[section] = options['empty-value'];
+        });
+      }else if( sections.indexOf(part) > 0){
+        values['unit'] = options['empty-value'];
+      }
+    }
+    
+    $item.getValue = function(part){
+      if(_isset(part)){
+        return values[part];
+      }
+      return values;
+    }
+    
+    $item.getDataItem = function(){
+      getDataItem();
     }
     
     $item.displayMenu = function(){
@@ -194,7 +210,6 @@
     }
     
     function enable(){
-      
       $(window).click(function() {
         $menu.destroy();
       });
@@ -206,13 +221,7 @@
       });
       
       $item.find(_c(classes.section)).on('click', function(){
-        //_destroyMenus();
         var $section = $(this);
-        //var $section_input = $section.find(_c(classes.sectionInput));
-        //var $unit_input = $item.find(_c(classes.unitInput));
-        
-        //_reloadValues($odontogram);
-        
         clickSection($section);
         options.beforeChange($item);
         return false;
@@ -223,17 +232,17 @@
       $mobilityRecession.on('change', function(){
         selectChange($(this));
       });
-      
     }
     
-    function destroy(){ }
+    function destroy(){
+      // ToDo
+      
+    }
     
     function create(){
       getDataItem();
       $item.addClass(classes.item);
       loadConfig($item);
-      
-      debug(options['format']);
       
       var format = options['format'].split(',');
       format.forEach(function(v, i){
@@ -269,15 +278,17 @@
     }
     
     function create_unit(){
+      var name = 'unit'
       $unit = $('<div />')
         .addClass(classes.unit)
         .css({width: options['size'], height: options['size']});
-      values['unit'] = options['empty-value'];
+      values[name] = options['empty-value'];
       if(options['form']){
-        var unit_input_name = options['input-name']+"["+dataItem+"][unit]";
+        var unit_input_name = options['input-name']+"["+dataItem+"]["+name+"]";
         var $unit_input = $('<input />')
           .prop('type','hidden').prop('name',unit_input_name).val(options['empty-value'])
-          .addClass(classes.input).addClass(classes.unitInputn);
+          .data('name',name)
+          .addClass(classes.input).addClass(classes.unitInput);
         $unit.append( $unit_input );
       }
       
@@ -302,6 +313,7 @@
         var section_input_name = options['input-name']+"["+dataItem+"]["+name+"]";
         var $section_input = $('<input />')
           .prop('type','hidden').prop('name',section_input_name).val(options['empty-value'])
+          .data('name',name)
           .addClass(classes.input).addClass(classes.sectionInput).addClass(name);
         $section.html($section_input);
       }
@@ -334,38 +346,51 @@
     }
     
     function create_mobility(){
-      var mobility_input_name = options['input-name']+"[" +dataItem+"][mobility]";
+      var name = 'mobility';
+      var mobility_input_name = options['input-name']+"[" +dataItem+"]["+name+"]";
       var mobility_input = $('<select />')
           .prop('name',mobility_input_name)
-          .data('name','mobility')
+          .data('name',name)
           .addClass(classes.input).addClass(classes.mobilityInput);
-      options['mobility-values'].forEach(function(val){
+          
+      mobility_values = [options['empty-value']].concat(options['mobility-values']);
+      mobility_values.forEach(function(val){
         mobility_input.append( $('<option>', {value: val, text: val}) );
       });
       var mobility = $('<div/>')
           .addClass(classes.mobility)
           .css({width: options['size']})
           .html(mobility_input);
-      values['mobility'] = options['mobility-values'][0];
+      values[name] = mobility_values[0];
       $item.append(mobility);
     }
     
     function create_recession(){
-      var recession_input_name = options['input-name']+"[" +dataItem+"][recession]";
+      var name = 'recession';
+      var recession_input_name = options['input-name']+"[" +dataItem+"]["+name+"]";
       var recession_input = $('<select />')
           .prop('name',recession_input_name)
-          .data('name','recession')
+          .data('name',name)
           .addClass(classes.input).addClass(classes.recessionInput)
         ;
-      options['recession-values'].forEach(function(val){
+      recession_values = [options['empty-value']].concat(options['recession-values']);
+      recession_values.forEach(function(val){
         recession_input.append( $('<option>', {value: val, text: val}) );
       });
       var recession = $('<div/>')
           .addClass(classes.recession)
           .css({width: options['size']})
           .html(recession_input);
-      values['recession'] = options['recession-values'][0];
+      values[name] = recession_values[0];
       $item.append(recession);
+    }
+    
+    function updateForm(){
+      $item.find(_c(classes.input)).each(function(){
+        var input = $(this);
+        var name = input.data('name');
+        input.val(values[name]);
+      });
     }
     
     function paint(){
@@ -381,12 +406,12 @@
           addFigure($section, section_value, 'section');
         });
         
-        //if(unit_value > 0){
-        //  _addFigure($unit.find(_c(classes.overSection)), 'unit', unit_value);
-        //  $over.css('display', 'block');
-        //}else{
-        //  $over.css('display', 'none');
-        //}
+        if( unit_value !== options['empty-value'] ){
+          addFigure($unit.find(_c(classes.overSection)), unit_value, 'unit');
+          $over.css('display', 'block');
+        }else{
+          $over.css('display', 'none');
+        }
       });
     }
     
@@ -438,12 +463,9 @@
           newValue = options['empty-value'];
         }
       }
-      values[section_name] = newValue;
-      if(options['form']){
-        var $input = $section.find(_c(classes.sectionInput));
-        $input.val(newValue);
-      }
-      addFigure($section, newValue, 'section');
+      
+      $item.setValue(section_name, newValue);
+      
       options.sectionClick($item);
       return $section;
     }
@@ -486,14 +508,16 @@
     return $item;
   }
   
-  $.fn.ogMenu = function($item, options){
+  $.fn.ogMenu = function($item,user_options){
     var $menuList = $(this);
     var dataItem = $item.data('item');
     
     var options = $.extend({
-      'menu-title': 'Piece %dataItem%',
+      'menu-title': 'Piece #%dataItem%',
       'menu-icon': true,   // false or url_image
-    },options);
+      
+      menuClick: function(itemMenu, $item){}
+    },user_options);
     
     var classes = {
       menu: 'og-menu',
@@ -510,7 +534,6 @@
     $menuList.display = function(){
       $menuList.destroy();
       $menuList.addClass(classes.menu);
-      console.log('display menu');
       var menu = $('<ul />');
       
       var menuIcon = '';
@@ -541,17 +564,14 @@
           out.append($icon);
           out.append(itemMenu.title);
           menuDisplay.html(out)
-          //.on('click', function(){
-          //  _clickMenu(itemMenu, $item);
-          //});
+              .on('click', function(){
+                clickMenu(itemMenu);
+              });
           ;
         }
         menu.append(menuDisplay);
       });
       $item.find(_c(classes.unit)).append(menu);
-      
-      
-      
       
       menu.menu({
         items: "> :not(.ui-widget-header)"
@@ -570,42 +590,28 @@
       return dataMenuList;
     }
     
-    
-    /*
-    function _displayMenu($item){
-      var menu = $('<ul />').addClass(classes.menu);
-      var title = $('<li />')
-      .addClass('ui-widget-header')
-      .html('<div>'+options.menuTitle.replace("%dataItem%", $item.data('item'))+'</div>');
-      menu.append(title);
-      
-      menuList = _getMenuList();
-      
-      menuList.forEach(function(itemMenu, i){
-        var menuDisplay = $('<li />');
-        if(itemMenu.type == 'separator' || itemMenu.type == 'divider'){
-          menuDisplay.addClass('ui-menu-divider');
-        }else{
-          var out = $('<div />');
-          var $icon = $('<div />').addClass(classes.menuIcon)
-          if(_isset(itemMenu.figure)){
-            $icon.css(itemMenu.figure);
-          }
-          out.append($icon);
-          out.append(itemMenu.title);
-          menuDisplay.html(out)
-          .on('click', function(){
-            _clickMenu(itemMenu, $item);
-          });
-        }
-        menu.append(menuDisplay);
-      });
-      $item.find(_c(classes.unit)).append(menu);
-      menu.menu({
-        items: "> :not(.ui-widget-header)"
-      });
+    function clickMenu(itemMenu){
+      if(itemMenu.type == 'unit'){
+        $item.setValue('unit', itemMenu['index']);
+        
+      }else if(itemMenu.type == 'section'){
+        var sections = options['sections'].split(',');
+        $item.setValue(sections, itemMenu['index']);
+        
+      }else if(itemMenu.type == 'clean' && itemMenu.all ){
+        var sections = options['sections'].split(',') ;
+        var all = sections.concat(['recession','mobility','unit']);
+        $item.setValue(all, options['empty-value']);
+        
+      }else if(itemMenu.type == 'clean'){
+        var sections = options['sections'].split(',');
+        $item.setValue(sections, options['empty-value']);
+        
+      }else if(itemMenu.type == 'function'){
+        itemMenu.action($item);
+        
+      }
     }
-    */
     
     return $menuList;
   }
