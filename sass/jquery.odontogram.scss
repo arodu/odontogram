@@ -88,6 +88,13 @@
     }
   }
   
+  .og-mobility-input, .og-recession-input{
+    width: 70%;
+    //font-size: .7em;
+    border: 0px;
+    @include border-radius(4px);
+  }
+  
   .og-menu-button{
     cursor: pointer;
   }

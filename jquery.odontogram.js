@@ -78,7 +78,64 @@
    ];
 
   $.fn.odontogram = function(user_options){
+    var $odontogram = $(this);
+    var items = {};
     
+    var options = $.extend({
+      'json': {},
+      'item-selector': '[data-item]',
+      'enable': true,
+    },user_options);
+    
+    var classes = {
+      odontogram: 'og-diagram',
+    };
+    
+    $odontogram.init = function(){
+      $odontogram.addClass(classes.odontogram);
+      $odontogram.find(options['item-selector']).each(function(){
+        var dataItem = $(this).data('item');
+        items[dataItem] = $(this).ogItem(options);
+        if(_isset(options['json'][dataItem.toString()])){
+          items[dataItem].setValue(options['json'][dataItem.toString()]);
+        }
+        if(!options['enable']){
+          items[dataItem].enable(false);
+        }
+      });
+      return $odontogram;
+    }
+    
+    $odontogram.getItem = function(id){
+      if(_isset(id)){
+        return items[id];
+      }
+      return items;
+    }
+    
+    $odontogram.json = function(json){
+      if(_isset(json)){
+        // setter
+        options['json'] = json;
+        $.each(items, function(i){
+          var dataItem = items[i].getDataItem();
+          if(_isset(options['json'][dataItem.toString()])){
+            items[i].setValue( options['json'][dataItem.toString()] );
+          }
+        });
+        return $odontogram;
+      }else{
+        // getter
+        var out = {};
+        $.each(items, function(i){
+          var dataItem = items[i].getDataItem();
+          out[dataItem] = items[i].getValue();
+        });
+        return out;
+      }
+    }
+    
+    return $odontogram.init();
   }
 
   $.fn.ogItem = function(user_options){
@@ -135,10 +192,14 @@
       destroy();
       create();
       enable();
+      
+      return $item;
     }
     
     $item.destroy = function(){
       destroy();
+      
+      return $item;
     }
     
     $item.enable = function(isEnable){
@@ -147,6 +208,8 @@
       }else if(!isEnable){ //disable
         disable();
       }
+      
+      return $item;
     }
     
     //$item.empty = function(){
@@ -157,18 +220,27 @@
     
     $item.setData = function(data){
       options['data'] = data;
+      
+      return $item;
     }
     
     $item.setValue = function(parts, new_value){
       if(typeof parts === 'string'){
         setValue(parts, new_value);
-      }else{
+      }else if(typeof parts === 'object' && _isset(new_value)){
         parts.forEach(function(part){
           setValue(part, new_value);
+        });
+      }else if(typeof parts === 'object' && !_isset(new_value)){
+        Object.keys(parts).forEach(function(key) {
+          if(parts[key] !== null){
+            setValue(key, parseInt(parts[key]) );
+          }
         });
       }
       updateForm();
       paint();
+      return $item;
     }
     
     function setValue(part, new_value){
@@ -191,11 +263,13 @@
     }
     
     $item.getDataItem = function(){
-      getDataItem();
+      return getDataItem();
     }
     
     $item.displayMenu = function(){
       $menu.display();
+      
+      return $item;
     }
     
     function getDataItem(){
@@ -615,7 +689,6 @@
     
     return $menuList;
   }
-  
   
   function _c(class_name){
     return '.'+class_name;
