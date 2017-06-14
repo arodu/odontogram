@@ -108,7 +108,7 @@
     
     $odontogram.getItem = function(id){
       if(_isset(id)){
-        return items[id];
+        return items[parseInt(id)];
       }
       return items;
     }
@@ -163,10 +163,10 @@
       
       'debug': true,
       
-      sectionClick: function(){},
-      buttonMenuClick: function(){},
-      selectChange: function(){},
-      beforeChange: function(){},
+      sectionClick: function($item, section){},
+      buttonMenuClick: function($item){},
+      selectChange: function($item, select){},
+      beforeChange: function($item){},
     },user_options);
     
     var classes = {
@@ -255,11 +255,19 @@
       }
     }
     
-    $item.getValue = function(part){
-      if(_isset(part)){
-        return values[part];
+    $item.getValue = function(parts){
+      if(_isset(parts)){
+        var out = {};
+        $.each(parts, function(index, part){
+          out[part] = values[part];
+        });
+        return out;
       }
       return values;
+    }
+    
+    $item.getSection = function(section){
+      return $item.find(_c([classes.section, section],''));
     }
     
     $item.getDataItem = function(){
@@ -301,11 +309,12 @@
         return false;
       });
       
-      $mobilityRecession = $item.find(_c(classes.mobilityInput)+","+_c(classes.recessionInput));
-      $mobilityRecession.prop('disabled',false);
-      $mobilityRecession.on('change', function(){
-        selectChange($(this));
-      });
+      $item.find( _c([classes.mobilityInput, classes.recessionInput], ' ') )
+        .prop('disabled', false)
+        .on('change', function(){
+          selectChange($(this));
+        });
+      
     }
     
     function destroy(){
@@ -519,7 +528,7 @@
       $select.find('option:selected').each(function(){
         values[select_name] = $(this).val();
       })
-      options.selectChange($item);
+      options.selectChange($item, select_name);
       options.beforeChange($item);
     }
     
@@ -540,7 +549,7 @@
       
       $item.setValue(section_name, newValue);
       
-      options.sectionClick($item);
+      options.sectionClick($item, section_name);
       return $section;
     }
     
@@ -590,7 +599,7 @@
       'menu-title': 'Piece #%dataItem%',
       'menu-icon': true,   // false or url_image
       
-      menuClick: function(itemMenu, $item){}
+      menuClick: function($item, menuElement){}
     },user_options);
     
     var classes = {
@@ -685,13 +694,22 @@
         itemMenu.action($item);
         
       }
+      options.menuClick($item, itemMenu);
     }
     
     return $menuList;
   }
   
-  function _c(class_name){
-    return '.'+class_name;
+  function _c(class_name, separator){
+    if(typeof class_name == 'object' && _isset(separator)){
+      var out = '';
+      $.each(class_name, function(c){
+        out = out + '.' + class_name[c] + separator;
+      });
+      return out.trim();
+    }else{
+      return '.'+class_name;
+    }
   }
   
   function _getDataConfig($tag, review){
